@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Light mode colors */
             --background: #ececec;
             --foreground: #222;
             --primary: #ff4a00;
@@ -17,39 +16,6 @@
             --page-max-width: 1300px;
             --black-10: rgba(0, 0, 0, 0.1);
             --black-50: rgba(0, 0, 0, 0.5);
-            
-            /* Message colors */
-            --message-user-bg: var(--primary);
-            --message-user-text: #ffffff;
-            --message-assistant-bg: #ffffff;
-            --message-assistant-text: var(--foreground);
-            --message-avatar-bg: #ddd;
-            --message-avatar-user-bg: var(--primary);
-            --message-avatar-assistant-bg: #f4f4f4;
-            
-            /* UI element colors */
-            --button-bg: #f4f4f4;
-            --button-primary-bg: var(--primary);
-            --button-secondary-bg: #222;
-            --status-connected: var(--primary);
-            --status-disconnected: #dc3545;
-            --debug-toggle-bg: #ccc;
-            --debug-toggle-active: var(--primary);
-            
-            /* Border and shadow colors */
-            --border-color: rgba(0, 0, 0, 0.1);
-            --shadow-inset-light: rgba(255, 255, 255, 0.8);
-            --shadow-inset-dark: rgba(0, 0, 0, 0.1);
-            --shadow-button: rgba(0, 0, 0, 0.26);
-            
-            /* Event panel colors */
-            --event-bg: #ffffff;
-            --event-header-bg: #f9f9f9;
-            --event-header-hover: #f0f0f0;
-            --event-tool-bg: #fef3e2;
-            --event-tool-border: #f59e0b;
-            --event-handoff-bg: #f3e8ff;
-            --event-handoff-border: #8b5cf6;
             
             --radius-xs: 0.125rem;
             --radius-sm: 0.25rem;
@@ -64,61 +30,10 @@
                 rgba(0, 0, 0, 0.08) 1px -2px 2px 0px inset;
         }
 
-        /* Dark mode colors - WCAG AA compliant contrast ratios */
-        [data-theme="dark"],
-        body[data-theme="dark"] {
-            --background: #121212;
-            --foreground: #f0f0f0;
-            --primary: #ff7149;
-            --screen: #1e1e1e;
-            --black-10: rgba(255, 255, 255, 0.12);
-            --black-50: rgba(255, 255, 255, 0.6);
-            
-            /* Message colors - dark mode with improved contrast */
-            --message-user-bg: var(--primary);
-            --message-user-text: #000000;
-            --message-assistant-bg: #2a2a2a;
-            --message-assistant-text: #f0f0f0;
-            --message-avatar-bg: #404040;
-            --message-avatar-user-bg: var(--primary);
-            --message-avatar-assistant-bg: #505050;
-            
-            /* UI element colors - dark mode with better contrast */
-            --button-bg: #2a2a2a;
-            --button-primary-bg: var(--primary);
-            --button-secondary-bg: #404040;
-            --status-connected: var(--primary);
-            --status-disconnected: #ff6b6b;
-            --debug-toggle-bg: #404040;
-            --debug-toggle-active: var(--primary);
-            
-            /* Border and shadow colors - dark mode */
-            --border-color: rgba(255, 255, 255, 0.15);
-            --shadow-inset-light: rgba(255, 255, 255, 0.08);
-            --shadow-inset-dark: rgba(0, 0, 0, 0.4);
-            --shadow-button: rgba(0, 0, 0, 0.5);
-            
-            /* Event panel colors - dark mode with better contrast */
-            --event-bg: #2a2a2a;
-            --event-header-bg: #383838;
-            --event-header-hover: #454545;
-            --event-tool-bg: #3d2f1f;
-            --event-tool-border: #fbbf24;
-            --event-handoff-bg: #2d1f3d;
-            --event-handoff-border: #a78bfa;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        /* Smooth theme transitions - exclude elements that should change instantly */
-        *:not(.theme-slider):not(.debug-slider), 
-        *:not(.theme-slider):not(.debug-slider)::before, 
-        *:not(.theme-slider):not(.debug-slider)::after {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         html {
@@ -216,93 +131,13 @@
             color: rgba(34, 34, 34, 0.7);
         }
 
-        /* Toggle Controls Layout */
-        .toggle-controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toggle-label {
-            font-size: 11px;
-            color: var(--foreground);
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 400;
-        }
-
-        /* Theme Toggle Switch */
-        .theme-switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .theme-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .theme-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--debug-toggle-bg);
-            border-radius: 24px;
-            transition: 0.3s;
-            box-shadow: inset 0 1px 2px var(--border-color);
-        }
-
-        .theme-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: var(--message-assistant-bg);
-            border-radius: 50%;
-            transition: 0.3s;
-            box-shadow: 0 1px 2px var(--border-color);
-        }
-
-        input:checked + .theme-slider {
-            background-color: var(--debug-toggle-active);
-        }
-
-        input:checked + .theme-slider:before {
-            transform: translateX(20px);
-        }
-
-        /* Accessibility: Focus styles for theme toggle */
-        .theme-switch input:focus + .theme-slider {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        .theme-switch input:focus-visible + .theme-slider {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
         /* Debug Toggle Switch */
         .debug-switch {
             position: relative;
             display: inline-block;
             width: 44px;
             height: 24px;
+            margin-top: -8px;
         }
 
         .debug-switch input {
@@ -318,10 +153,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: var(--debug-toggle-bg);
+            background-color: #ccc;
             border-radius: 24px;
             transition: 0.3s;
-            box-shadow: inset 0 1px 2px var(--border-color);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .debug-slider:before {
@@ -331,29 +166,18 @@
             width: 18px;
             left: 3px;
             bottom: 3px;
-            background-color: var(--message-assistant-bg);
+            background-color: white;
             border-radius: 50%;
             transition: 0.3s;
-            box-shadow: 0 1px 2px var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         input:checked + .debug-slider {
-            background-color: var(--debug-toggle-active);
+            background-color: var(--primary);
         }
 
         input:checked + .debug-slider:before {
             transform: translateX(20px);
-        }
-
-        /* Accessibility: Focus styles for debug toggle */
-        .debug-switch input:focus + .debug-slider {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        .debug-switch input:focus-visible + .debug-slider {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
 
         /* Main Layout */
@@ -442,24 +266,24 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: var(--message-avatar-bg);
+            background: #ddd;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 11px;
             font-weight: bold;
             flex-shrink: 0;
-            box-shadow: inset 1px 1px 2px var(--shadow-inset-light), 
-                        inset -1px -1px 2px var(--shadow-inset-dark);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
         }
 
         .message.user .message-avatar {
-            background: var(--message-avatar-user-bg);
-            color: var(--message-user-text);
+            background: var(--primary);
+            color: white;
         }
 
         .message.assistant .message-avatar {
-            background: var(--message-avatar-assistant-bg);
+            background: #f4f4f4;
             color: var(--foreground);
         }
 
@@ -469,26 +293,23 @@
         }
 
         .message-bubble {
-            background: var(--message-assistant-bg);
-            color: var(--message-assistant-text);
+            background: white;
             padding: 12px 16px;
             border-radius: var(--radius-lg);
             word-wrap: break-word;
             line-height: 1.4;
-            box-shadow: inset 1px 1px 2px var(--shadow-inset-light), 
-                        inset -1px -1px 2px var(--shadow-inset-dark),
-                        0 1px 3px var(--border-color);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.05),
+                        0 1px 3px rgba(0,0,0,0.1);
         }
 
         .message.user .message-bubble {
-            background: var(--message-user-bg);
-            color: var(--message-user-text);
+            background: var(--primary);
+            color: white;
             border-bottom-right-radius: var(--radius-sm);
         }
 
         .message.assistant .message-bubble {
-            background: var(--message-assistant-bg);
-            color: var(--message-assistant-text);
             border-bottom-left-radius: var(--radius-sm);
         }
 
@@ -521,22 +342,21 @@
             gap: 8px;
             border-radius: var(--radius-md);
             padding: 12px;
-            background: var(--button-bg);
-            color: var(--foreground);
+            background: #f4f4f4;
             border: none;
             cursor: pointer;
             user-select: none;
             font-family: inherit;
             font-size: 12px;
             transition: box-shadow 0.3s ease;
-            box-shadow: var(--shadow-inset-light) 1px 1px 1px 0px inset,
-                        var(--shadow-inset-dark) -1px -1px 1px 0px inset,
-                        var(--shadow-button) 0.444584px 0.444584px 0.628737px -1px,
-                        var(--shadow-button) 1.21072px 1.21072px 1.71222px -1.5px,
-                        var(--shadow-button) 2.6583px 2.6583px 3.75941px -2.25px,
-                        var(--shadow-button) 5.90083px 5.90083px 8.34503px -3px,
-                        var(--shadow-button) 10px 10px 21.2132px -3.75px,
-                        -0.5px -0.5px 0 0 var(--border-color);
+            box-shadow: rgb(255, 255, 255) 1px 1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.15) -1px -1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.26) 0.444584px 0.444584px 0.628737px -1px,
+                        rgba(0, 0, 0, 0.247) 1.21072px 1.21072px 1.71222px -1.5px,
+                        rgba(0, 0, 0, 0.23) 2.6583px 2.6583px 3.75941px -2.25px,
+                        rgba(0, 0, 0, 0.192) 5.90083px 5.90083px 8.34503px -3px,
+                        rgba(0, 0, 0, 0.056) 10px 10px 21.2132px -3.75px,
+                        -0.5px -0.5px 0 0 rgb(0 0 0 / 5%);
         }
 
         .button:active {
@@ -552,39 +372,39 @@
 
         .button.primary {
             color: #fff;
-            background: var(--button-primary-bg);
-            box-shadow: inset 1px 1px 1px var(--shadow-inset-light), 
-                        inset -1px -1px 1px var(--shadow-inset-dark),
-                        var(--shadow-button) 0.444584px 0.444584px 0.628737px -1px,
-                        var(--shadow-button) 1.21072px 1.21072px 1.71222px -1.5px,
-                        var(--shadow-button) 2.6583px 2.6583px 3.75941px -2.25px,
-                        var(--shadow-button) 5.90083px 5.90083px 8.34503px -3px,
-                        var(--shadow-button) 10px 10px 21.2132px -3.75px,
-                        -0.5px -0.5px var(--border-color);
+            background: var(--primary);
+            box-shadow: inset 1px 1px 1px #ffffffd4, 
+                        inset -1px -1px 1px #0000003b,
+                        0.444584px 0.444584px 0.628737px -1px #00000042,
+                        1.21072px 1.21072px 1.71222px -1.5px #0000003f,
+                        2.6583px 2.6583px 3.75941px -2.25px #0000003b,
+                        5.90083px 5.90083px 8.34503px -3px #00000031,
+                        10px 10px 21.2132px -3.75px #0000003b,
+                        -0.5px -0.5px #952b0087;
         }
 
         .button.primary:active {
-            box-shadow: inset 0.5px 0.5px 1px var(--shadow-inset-light), 
-                        inset -0.5px -0.5px 1px var(--shadow-inset-dark),
-                        var(--shadow-button) 0.222px 0.222px 0.314px -1px,
-                        var(--shadow-button) 0.605px 0.605px 0.856px -1px,
-                        var(--shadow-button) 1.329px 1.329px 1.88px -1.5px,
-                        var(--shadow-button) 2.95px 2.95px 4.172px -2px,
-                        var(--shadow-button) 2.5px 2.5px 3px -2.5px,
-                        -0.5px -0.5px var(--border-color);
+            box-shadow: inset 0.5px 0.5px 1px #fff, 
+                        inset -0.5px -0.5px 1px #0000005b,
+                        0.222px 0.222px 0.314px -1px #0003,
+                        0.605px 0.605px 0.856px -1px #0000002e,
+                        1.329px 1.329px 1.88px -1.5px #00000040,
+                        2.95px 2.95px 4.172px -2px #0000001a,
+                        2.5px 2.5px 3px -2.5px #00000026,
+                        -0.5px -0.5px #00000022;
         }
 
         .button.secondary {
             color: #fff;
-            background: var(--button-secondary-bg);
-            box-shadow: inset 1px 1px 1px var(--shadow-inset-light), 
-                        inset -1px -1px 1px var(--shadow-inset-dark),
-                        var(--shadow-button) 0.444584px 0.444584px 0.628737px -0.75px,
-                        var(--shadow-button) 1.21072px 1.21072px 1.71222px -1.5px,
-                        var(--shadow-button) 2.6583px 2.6583px 3.75941px -2.25px,
-                        var(--shadow-button) 5.90083px 5.90083px 8.34503px -3px,
-                        var(--shadow-button) 14px 14px 21.2132px -3.75px,
-                        -0.5px -0.5px var(--border-color);
+            background: #222;
+            box-shadow: inset 1px 1px 1px #ffffffb3, 
+                        inset -1px -1px 1px #0000003b,
+                        0.444584px 0.444584px 0.628737px -0.75px #00000042,
+                        1.21072px 1.21072px 1.71222px -1.5px #0000003f,
+                        2.6583px 2.6583px 3.75941px -2.25px #0000003b,
+                        5.90083px 5.90083px 8.34503px -3px #00000031,
+                        14px 14px 21.2132px -3.75px #00000033,
+                        -0.5px -0.5px #000000af;
         }
 
         .button:disabled {
@@ -635,7 +455,7 @@
         }
 
         .status.connected .status-indicator {
-            background: var(--status-connected);
+            background: var(--primary);
         }
 
         /* Debug Panel */
@@ -683,13 +503,13 @@
         }
 
         .event {
-            background: var(--event-bg);
+            background: white;
             border-radius: var(--radius-sm);
             margin-bottom: 8px;
             overflow: hidden;
-            box-shadow: inset 1px 1px 1px var(--shadow-inset-light), 
-                        inset -1px -1px 1px var(--shadow-inset-dark),
-                        0 1px 2px var(--border-color);
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.8), 
+                        inset -1px -1px 1px rgba(0,0,0,0.05),
+                        0 1px 2px rgba(0,0,0,0.1);
         }
 
         .event-header {
@@ -699,12 +519,12 @@
             justify-content: space-between;
             align-items: center;
             font-size: 10px;
-            background: var(--event-header-bg);
+            background: #f9f9f9;
             transition: background-color 0.2s;
         }
 
         .event-header:hover {
-            background: var(--event-header-hover);
+            background: #f0f0f0;
         }
 
         .event-type {
@@ -719,11 +539,10 @@
 
         .event-content {
             padding: 12px;
-            background: var(--event-bg);
-            border-top: 1px solid var(--border-color);
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
             font-size: 9px;
-            color: var(--foreground);
-            opacity: 0.8;
+            color: rgba(34, 34, 34, 0.7);
             white-space: pre-wrap;
             max-height: 150px;
             overflow-y: auto;
@@ -736,13 +555,13 @@
 
         /* Tool Events */
         .event.tool .event-header {
-            background: var(--event-tool-bg);
-            border-left: 2px solid var(--event-tool-border);
+            background: #fef3e2;
+            border-left: 2px solid #f59e0b;
         }
 
         .event.handoff .event-header {
-            background: var(--event-handoff-bg);
-            border-left: 2px solid var(--event-handoff-border);
+            background: #f3e8ff;
+            border-left: 2px solid #8b5cf6;
         }
 
         /* Empty State */
@@ -817,22 +636,10 @@
                 </a>
             </div>
             <div class="controls-section">
-                <div class="toggle-controls">
-                    <div class="toggle-group">
-                        <span class="toggle-label">Theme</span>
-                        <label class="theme-switch" for="themeToggle">
-                            <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" role="switch">
-                            <span class="theme-slider"></span>
-                        </label>
-                    </div>
-                    <div class="toggle-group">
-                        <span class="toggle-label">Debug</span>
-                        <label class="debug-switch" for="debugToggle">
-                            <input type="checkbox" id="debugToggle" aria-label="Toggle debug panel" role="switch">
-                            <span class="debug-slider"></span>
-                        </label>
-                    </div>
-                </div>
+                <label class="debug-switch">
+                    <input type="checkbox" id="debugToggle">
+                    <span class="debug-slider"></span>
+                </label>
             </div>
         </div>
     </div>

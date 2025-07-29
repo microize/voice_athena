@@ -27,7 +27,6 @@ class RealtimeDemo {
         
         this.initializeElements();
         this.setupEventListeners();
-        this.initializeTheme();
     }
     
     initializeElements() {
@@ -39,7 +38,6 @@ class RealtimeDemo {
         this.debugPanel = document.getElementById('debugPanel');
         this.eventsContent = document.getElementById('eventsContent');
         this.toolsContent = document.getElementById('toolsContent');
-        this.themeToggle = document.getElementById('themeToggle');
     }
     
     setupEventListeners() {
@@ -58,58 +56,11 @@ class RealtimeDemo {
         this.debugToggle.addEventListener('change', () => {
             this.toggleDebugMode();
         });
-        
-        this.themeToggle.addEventListener('change', () => {
-            this.toggleTheme();
-        });
     }
     
     toggleDebugMode() {
         this.debugMode = this.debugToggle.checked;
         this.debugPanel.classList.toggle('active', this.debugMode);
-    }
-    
-    toggleTheme() {
-        const isDark = this.themeToggle.checked;
-        this.setTheme(isDark ? 'dark' : 'light');
-    }
-    
-    setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.setAttribute('data-theme', theme);
-        this.updateThemeToggle(theme);
-        this.saveThemePreference(theme);
-    }
-    
-    updateThemeToggle(theme) {
-        this.themeToggle.checked = theme === 'dark';
-    }
-    
-    getSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    
-    getSavedTheme() {
-        return localStorage.getItem('theme');
-    }
-    
-    saveThemePreference(theme) {
-        localStorage.setItem('theme', theme);
-    }
-    
-    initializeTheme() {
-        const savedTheme = this.getSavedTheme();
-        const systemTheme = this.getSystemTheme();
-        const initialTheme = savedTheme || systemTheme;
-        
-        this.setTheme(initialTheme);
-        
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (!this.getSavedTheme()) {
-                this.setTheme(e.matches ? 'dark' : 'light');
-            }
-        });
     }
     
     generateSessionId() {
