@@ -613,6 +613,59 @@
                 min-height: 400px;
             }
         }
+
+        /* SQL Interview Specific Styling */
+        .sql-code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 8px 0;
+            border-left: 3px solid var(--primary);
+            overflow-x: auto;
+        }
+
+        .sql-keyword {
+            color: #569cd6;
+            font-weight: bold;
+        }
+
+        .sql-string {
+            color: #ce9178;
+        }
+
+        .sql-comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .interview-status {
+            background: #f0f8ff;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .interview-feedback {
+            background: #f0fff0;
+            border-left: 3px solid #28a745;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: var(--radius-sm);
+        }
+
+        .interview-hint {
+            background: #fff8dc;
+            border-left: 3px solid #ffc107;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: var(--radius-sm);
+        }
     </style>
 </head>
 <body>
@@ -626,7 +679,7 @@
             </div>
             <div class="description-section">
                 <div class="description">
-                    An interactive demo for developers to try realtime voice conversations with OpenAI's API.
+                    Practice SQL technical interviews with an AI interviewer. Real-time voice conversation to test your database skills.
                 </div>
                 <a class="link" href="https://platform.openai.com/docs/guides/realtime" target="_blank">
                     <span>Start building</span>
@@ -647,8 +700,8 @@
     <div class="main-container">
         <div class="chat-section">
             <div class="chat-header">
-                <h1 class="chat-title">Voice Assistant</h1>
-                <p class="chat-subtitle">Connect and start speaking to begin your conversation</p>
+                <h1 class="chat-title">SQL Interview Assistant</h1>
+                <p class="chat-subtitle">Connect and start speaking to begin your SQL technical interview</p>
             </div>
             
             <div id="messagesContainer" class="messages-container">
