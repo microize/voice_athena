@@ -18,55 +18,28 @@ logger = logging.getLogger(__name__)
 
 
 @function_tool
-def check_sql_answer(user_query: str, expected_concepts: str) -> str:
-    """Evaluate if the user's SQL answer demonstrates understanding of key concepts."""
-    return f"SQL answer evaluation: The query '{user_query}' shows understanding of {expected_concepts}. Good work!"
+def get_weather(city: str) -> str:
+    """Get the weather in a city."""
+    return f"The weather in {city} is sunny."
 
 
 @function_tool
-def provide_sql_hint(difficulty_level: str) -> str:
-    """Provide a helpful hint for SQL questions."""
-    hints = {
-        "beginner": "Remember to use SELECT to retrieve data, FROM to specify the table, and WHERE to filter results.",
-        "intermediate": "Consider using JOIN operations to combine tables, GROUP BY for aggregation, and subqueries for complex conditions.",
-        "advanced": "Think about window functions, CTEs, performance optimization, and complex analytical queries."
-    }
-    return hints.get(difficulty_level, "Focus on the SQL fundamentals and break the problem into smaller parts.")
+def get_secret_number() -> int:
+    """Returns the secret number, if the user asks for it."""
+    return 71
 
 
-sql_interviewer_agent = RealtimeAgent(
-    name="SQL Interviewer",
-    instructions="""You are an experienced SQL interviewer conducting a technical interview. Your role is to:
+haiku_agent = RealtimeAgent(
+    name="Haiku Agent",
+    instructions="You are a haiku poet. You must respond ONLY in traditional haiku format (5-7-5 syllables). Every response should be a proper haiku about the topic. Do not break character.",
+    tools=[],
+)
 
-1. **Assessment Style**: Ask SQL questions ranging from basic to advanced based on the candidate's responses
-2. **Progressive Difficulty**: Start with fundamental concepts and gradually increase complexity
-3. **Interactive Approach**: 
-   - Ask one question at a time
-   - Wait for the candidate's response before proceeding
-   - Provide constructive feedback on their answers
-   - Offer hints when the candidate is struggling
-
-4. **Question Categories**:
-   - Basic: SELECT, WHERE, ORDER BY, basic functions
-   - Intermediate: JOINs, GROUP BY, HAVING, subqueries
-   - Advanced: Window functions, CTEs, performance optimization, complex analytics
-
-5. **Communication Style**:
-   - Professional but encouraging
-   - Speak clearly and at a moderate pace
-   - Explain concepts when needed
-   - Ask follow-up questions to test deeper understanding
-
-6. **Interview Flow**:
-   - Begin with a brief introduction
-   - Ask about the candidate's SQL experience level
-   - Present questions appropriate to their skill level
-   - Provide immediate feedback and explanations
-   - Conclude with overall assessment
-
-Start the interview by introducing yourself and asking about their SQL background.""",
-    tools=[check_sql_answer, provide_sql_hint],
-    handoffs=[],
+agent = RealtimeAgent(
+    name="Assistant",
+    instructions="You are an English-speaking assistant. Always respond in clear, natural English. Speak at a moderate pace for good user experience. If the user wants poetry or haikus, you can hand them off to the haiku agent via the transfer_to_haiku_agent tool.",
+    tools=[get_weather, get_secret_number],
+    handoffs=[haiku_agent],
 )
 
 
@@ -84,7 +57,7 @@ class RealtimeWebSocketManager:
 
         try:
             logger.info(f"Creating RealtimeRunner for session {session_id}")
-            runner = RealtimeRunner(sql_interviewer_agent)
+            runner = RealtimeRunner(agent)
             
             # Configure model settings for English language and appropriate voice
             model_config = {
