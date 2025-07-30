@@ -9,7 +9,11 @@
       "Bash(git push:*)",
       "Bash(pkill:*)",
       "Bash(kill:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(uv sync:*)",
+      "Bash(ls:*)",
+      "Bash(timeout 10s uv run:*)",
+      "Bash(uv run:*)"
     ],
     "deny": []
   }

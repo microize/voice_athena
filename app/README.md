@@ -38,6 +38,20 @@ A web-based realtime voice assistant demo with a FastAPI backend and HTML/JS fro
    # Windows PowerShell
    Invoke-RestMethod -Uri "https://api.openai.com/v1/models" -Headers @{"Authorization"="Bearer $env:OPENAI_API_KEY"}
    ```
+   
+   If you're in Bash/WSL (likely):
+   Set your key like this:
+   
+   ```bash
+   export OPENAI_API_KEY="sk-proj-xxxxxxxxxxxxxxxxxxxxxxxx"
+   ```
+   
+   Then test:
+   
+   ```bash
+   curl https://api.openai.com/v1/models \
+     -H "Authorization: Bearer $OPENAI_API_KEY"
+   ```
 
 ## Usage
 

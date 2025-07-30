@@ -32,7 +32,6 @@ class RealtimeDemo {
     initializeElements() {
         this.connectBtn = document.getElementById('connectBtn');
         this.micBtn = document.getElementById('micBtn');
-        this.statusText = document.getElementById('statusText');
         this.messagesContainer = document.getElementById('messagesContainer');
         this.debugToggle = document.getElementById('debugToggle');
         this.debugPanel = document.getElementById('debugPanel');
@@ -134,13 +133,14 @@ class RealtimeDemo {
         this.micBtn.disabled = !this.isConnected;
         this.micBtn.classList.toggle('listening', this.isCapturing && !this.isMuted);
         
-        // Update status text
-        this.statusText.classList.toggle('connected', this.isConnected);
-        const statusSpan = this.statusText.querySelector('span');
-        if (this.isConnected) {
-            statusSpan.textContent = this.isMuted ? 'Muted' : 'Listening';
-        } else {
-            statusSpan.textContent = 'Disconnected';
+        // Update mic button text
+        const micStatusSpan = this.micBtn.querySelector('.mic-button-content span:last-child');
+        if (micStatusSpan) {
+            if (this.isConnected) {
+                micStatusSpan.textContent = this.isMuted ? 'Muted' : 'Listening';
+            } else {
+                micStatusSpan.textContent = 'Disconnected';
+            }
         }
     }
     

@@ -36,9 +36,10 @@
             box-sizing: border-box;
         }
 
-        html {
+        html, body {
             font-size: 14px;
             line-height: 130%;
+            height: 100%;
         }
 
         body {
@@ -59,62 +60,10 @@
 
         /* Header */
         .header {
-            padding: 24px 20px;
+            padding: 16px 20px;
             width: 100%;
             max-width: var(--page-max-width);
             margin: 0 auto;
-        }
-
-        .header-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 12px;
-        }
-
-        .logo-section {
-            grid-column: span 2;
-            order: 1;
-            margin-bottom: 32px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 400;
-            color: var(--foreground);
-        }
-
-        .logo-icon {
-            width: 24px;
-            height: 24px;
-            background: var(--primary);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .description-section {
-            grid-column: span 12;
-            order: 3;
-        }
-
-        .controls-section {
-            grid-column: span 10;
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-start;
-            order: 2;
-        }
-
-        .description {
-            color: rgba(34, 34, 34, 0.7);
-            margin-bottom: 12px;
-            line-height: 1.4;
         }
 
         .link {
@@ -125,6 +74,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            font-size: 11px;
         }
 
         .link:hover {
@@ -185,22 +135,28 @@
             flex: 1;
             display: flex;
             width: 100%;
-            max-width: var(--page-max-width);
-            margin: 0 auto;
-            padding: 0 20px;
+            margin: 0;
+            padding: 0 20px 20px 20px;
             gap: 24px;
+            height: calc(100vh - 32px);
+            align-items: stretch;
+        }
+
+        .left-panel,
+        .chat-section,
+        .debug-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         /* Chat Interface */
         .chat-section {
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
             background: var(--screen);
             border-radius: var(--radius-lg);
-            padding: 24px;
-            min-height: 500px;
-            max-height: calc(100vh - 200px);
             box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
                         inset -1px -1px 2px rgba(0,0,0,0.1);
         }
@@ -226,9 +182,6 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 24px;
-            min-height: 300px;
-            max-height: calc(100vh - 400px);
             padding: 0 4px;
         }
 
@@ -330,8 +283,17 @@
             justify-content: center;
             align-items: center;
             gap: 16px;
-            padding: 16px 0;
+            padding: 16px 0 0 0;
             border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        #connectBtn {
+            flex: 1;
+        }
+
+        #helpBtn {
+            flex: 0 0 auto;
+            min-width: 80px;
         }
 
         /* Button Styles (matching OpenAI FM) */
@@ -342,6 +304,7 @@
             gap: 8px;
             border-radius: var(--radius-md);
             padding: 12px;
+            height: 48px;
             background: #f4f4f4;
             border: none;
             cursor: pointer;
@@ -413,28 +376,64 @@
         }
 
         .mic-button {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            font-size: 20px;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
         }
 
-        .mic-button.listening {
-            animation: pulse 2s infinite;
+        .mic-button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
         }
 
-        @keyframes pulse {
-            0% { 
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 74, 0, 0.4);
+        .mic-button.listening .mic-button-content span {
+            display: none;
+        }
+
+        .mic-button.listening .mic-button-content::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            width: 30px;
+            height: 16px;
+            z-index: 1;
+        }
+
+        .mic-button.listening .mic-button-content::after {
+            background-image: 
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary));
+            background-size: 2px 4px, 2px 8px, 2px 12px, 2px 6px, 2px 3px;
+            background-position: 0px center, 4px center, 8px center, 12px center, 16px center;
+            background-repeat: no-repeat;
+            animation: audioFrequency 1.2s infinite;
+        }
+
+        @keyframes audioFrequency {
+            0%, 100% { 
+                background-size: 2px 4px, 2px 8px, 2px 12px, 2px 6px, 2px 3px;
             }
-            70% { 
-                transform: scale(1.05);
-                box-shadow: 0 0 0 10px rgba(255, 74, 0, 0);
+            25% { 
+                background-size: 2px 8px, 2px 4px, 2px 6px, 2px 12px, 2px 7px;
             }
-            100% { 
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 74, 0, 0);
+            50% { 
+                background-size: 2px 3px, 2px 12px, 2px 4px, 2px 8px, 2px 11px;
+            }
+            75% { 
+                background-size: 2px 10px, 2px 6px, 2px 14px, 2px 4px, 2px 2px;
             }
         }
 
@@ -458,9 +457,100 @@
             background: var(--primary);
         }
 
+        /* Left Panel */
+        .left-panel {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            /* background: var(--screen);
+            border-radius: var(--radius-lg); */
+            /* padding: 20px; */
+            /* box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8),
+                        inset -1px -1px 2px rgba(0,0,0,0.1); */
+        }
+
+        .left-panel-top {
+            display: flex;
+            /* margin-top: 16px; */
+            flex-direction: column;
+        }
+
+        .left-panel .description {
+            margin-top: 10px;
+        }
+
+        .left-panel .link {
+            margin-bottom: 16px;
+        }
+
+        /* Logo Info Panel */
+        .logo-info-panel {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .logo-info-panel .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+            color: var(--foreground);
+            font-size: 16px;
+        }
+
+        .logo-info-panel .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-info-panel .description {
+            color: rgba(34, 34, 34, 0.7);
+            line-height: 1.4;
+            font-size: 13px;
+        }
+
+        .info-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .debug-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .debug-label {
+            font-size: 11px;
+            color: rgba(34, 34, 34, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+
         /* Debug Panel */
         .debug-panel {
-            width: 400px;
+            width: 350px;
+            flex-shrink: 0;
             background: var(--screen);
             border-radius: var(--radius-lg);
             padding: 16px;
@@ -588,29 +678,37 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo-section,
-            .description-section,
-            .controls-section {
-                grid-column: span 1;
-                order: initial;
-            }
-            
             .main-container {
                 flex-direction: column;
                 padding: 0 16px;
             }
             
-            .debug-panel {
+            .left-panel {
                 width: 100%;
                 order: -1;
             }
             
+            .debug-panel {
+                width: 100%;
+                order: 2;
+            }
+            
             .chat-section {
                 min-height: 400px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                gap: 16px;
+            }
+            
+            .left-panel {
+                width: 280px;
+            }
+            
+            .debug-panel {
+                width: 350px;
             }
         }
 
@@ -666,62 +764,172 @@
             margin: 8px 0;
             border-radius: var(--radius-sm);
         }
+
+        /* Help Modal */
+        .help-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .help-modal.active {
+            display: flex;
+        }
+
+        .help-modal-content {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8),
+                        inset -1px -1px 2px rgba(0,0,0,0.1),
+                        0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .help-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .help-modal-title {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--foreground);
+        }
+
+        .help-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: rgba(34, 34, 34, 0.7);
+            padding: 4px;
+        }
+
+        .help-close-btn:hover {
+            color: var(--foreground);
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+        }
+
+        .help-section-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .help-section-content {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(34, 34, 34, 0.8);
+        }
+
+        .help-section-content ul {
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .help-section-content li {
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-grid">
-            <div class="logo-section">
-                <div class="logo">
-                    <div class="logo-icon">A</div>
-                    <span>Athena</span>
-                </div>
-            </div>
-            <div class="description-section">
-                <div class="description">
+        <!-- Header is now empty but kept for spacing -->
+    </div>
+    
+    <div class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="left-panel-top">
+                <!-- Logo and Info Section -->
+                <div class="logo-info-panel">
+                    <div class="logo">
+                        <div class="logo-icon">A</div>
+                        <span>Athena</span>
+                    </div>
+                    <div class="description">
                     Practice SQL technical interviews with an AI interviewer. Real-time voice conversation to test your database skills.
                 </div>
-                <a class="link" href="https://platform.openai.com/docs/guides/realtime" target="_blank">
-                    <span>Start building</span>
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="currentColor">
-                        <path d="M10.5 6.5L10.5 2.5L6.5 2.5M10.5 2.5L5.5 7.5M2.5 4.5L2.5 10.5L8.5 10.5" stroke="currentColor" stroke-width="1" fill="none"/>
-                    </svg>
-                </a>
+                </div>
+                
+                
+                
             </div>
-            <div class="controls-section">
+            
+            <!-- Debug Toggle at Bottom -->
+            <div class="debug-toggle-container">
+                <span class="debug-label">Debug Mode</span>
                 <label class="debug-switch">
                     <input type="checkbox" id="debugToggle">
                     <span class="debug-slider"></span>
                 </label>
             </div>
         </div>
-    </div>
-    
-    <div class="main-container">
+
+        <!-- Chat Section -->
         <div class="chat-section">
-            <div class="chat-header">
+            <!-- <div class="chat-header">
                 <h1 class="chat-title">SQL Interview Assistant</h1>
                 <p class="chat-subtitle">Connect and start speaking to begin your SQL technical interview</p>
-            </div>
+            </div> -->
             
-            <div id="messagesContainer" class="messages-container">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🎤</div>
-                    <div class="empty-state-text">Ready to chat</div>
-                    <div class="empty-state-subtext">Click connect and start speaking</div>
-                </div>
-            </div>
+<div id="messagesContainer" class="messages-container">
+    <div class="empty-state" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 30px;
+    ">
+        <div class="empty-state-text" style="font-size: 20px; font-weight: bold;">
+            <span style="color: var(--primary);">Hi, I’m Athena</span>
+        </div>
+
+        <div class="empty-state-subtext" style="font-size: 16px; padding-top: 20px;">
+            I’ll be your SQL interview partner today.  
+            Get ready for real questions, hints, and feedback.
+        </div>
+
+        <div class="empty-state-subtext" style="font-size: 16px; padding-top: 6px;">
+            Click <span style="color: #333; font-weight: bold;">Connect</span> to begin your practice interview.
+        </div>
+    </div>
+</div>
+
+
             
             <div class="controls-container">
                 <button id="connectBtn" class="button primary">Connect</button>
-                <button id="micBtn" class="button mic-button secondary" disabled>🎤</button>
-                <div id="statusText" class="status">
-                    <div class="status-indicator"></div>
-                    <span>Disconnected</span>
-                </div>
+                <button id="micBtn" class="button mic-button secondary" disabled>
+                    <div class="mic-button-content">
+                        <span>Disconnected</span>
+                    </div>
+                </button>
+                <button id="helpBtn" class="button">
+                    <span>❓</span>
+                    <span>Help</span>
+                </button>
             </div>
         </div>
         
+        <!-- Right Debug Panel -->
         <div id="debugPanel" class="debug-panel">
             <div class="debug-header">Debug Information</div>
             <div class="debug-content">
@@ -741,6 +949,92 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
+    <div id="helpModal" class="help-modal">
+        <div class="help-modal-content">
+            <div class="help-modal-header">
+                <h2 class="help-modal-title">How to Use Athena</h2>
+                <button class="help-close-btn" onclick="closeHelpModal()">×</button>
+            </div>
+            
+            <div class="help-section">
+                <div class="help-section-title">Getting Started</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Click the "Connect" button to establish a connection</li>
+                        <li>Allow microphone permissions when prompted</li>
+                        <li>The mic button will show "Connected" when ready</li>
+                        <li>Start speaking naturally to begin your SQL interview</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">During the Interview</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Athena will introduce herself and assess your SQL skill level</li>
+                        <li>Answer questions by speaking clearly into your microphone</li>
+                        <li>Questions will progress from basic to advanced based on your responses</li>
+                        <li>You can ask for hints or clarification at any time</li>
+                        <li>The waveform animation shows when Athena is listening</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">Tips for Success</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Speak clearly and at a moderate pace</li>
+                        <li>Think out loud to explain your SQL reasoning</li>
+                        <li>Don't hesitate to ask questions or request examples</li>
+                        <li>Use the debug panel to see real-time conversation data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">Troubleshooting</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Ensure your microphone is working and not muted</li>
+                        <li>Check that you're using HTTPS or localhost</li>
+                        <li>Refresh the page if connection issues persist</li>
+                        <li>Enable the debug panel for detailed connection info</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
+    <script>
+        // Help modal functionality
+        function openHelpModal() {
+            document.getElementById('helpModal').classList.add('active');
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
+        // Add click handler to help button
+        document.getElementById('helpBtn').addEventListener('click', openHelpModal);
+
+        // Close modal when clicking outside
+        document.getElementById('helpModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeHelpModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHelpModal();
+            }
+        });
+    </script>
 </body>
 </html>
