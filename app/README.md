@@ -1,6 +1,15 @@
-# Realtime Demo App
+# Athena - SQL Technical Interview Assistant
 
-A web-based realtime voice assistant demo with a FastAPI backend and HTML/JS frontend.
+A real-time voice-based SQL technical interview application with comprehensive employee tracking and database analytics.
+
+## Features
+
+- **Voice-based SQL interviews** with real-time AI feedback
+- **Employee ID tracking** for session management
+- **Comprehensive database analytics** with web-based query interface
+- **Performance scoring** and detailed session reports
+- **Question categorization** by difficulty (intermediate/advanced) and topic
+- **SQLite database** with complete audit trail
 
 ## Prerequisites
 
@@ -18,7 +27,7 @@ A web-based realtime voice assistant demo with a FastAPI backend and HTML/JS fro
 2. Initialize the project and install dependencies:
    ```bash
    uv init
-   uv add fastapi uvicorn websockets openai-agents
+   uv add fastapi uvicorn websockets openai-agents aiosqlite
    ```
 
 ## Setup
@@ -61,23 +70,79 @@ Start the application:
 uv run python server.py
 ```
 
-Then open your browser to: http://localhost:8000
+The application provides two main interfaces:
 
-## How to Use
+### **1. SQL Interview Interface**
+Access at: http://localhost:8000
 
-1. Click **Connect** to establish a realtime session
-2. Audio capture starts automatically - just speak naturally
-3. Click the **Mic On/Off** button to mute/unmute your microphone
-4. Watch the conversation unfold in the left pane
-5. Monitor raw events in the right pane (click to expand/collapse)
-6. Click **Disconnect** when done
+**Interview Flow:**
+1. Enter your **Employee ID** in the left panel and click **Submit**
+2. Click **Connect** to establish a realtime session (button enabled after Employee ID submission)
+3. Audio capture starts automatically - speak naturally to begin your SQL interview
+4. The AI interviewer will ask intermediate/advanced SQL questions
+5. Receive real-time feedback and scoring on your responses
+6. Complete 4-6 questions for a full session report
+7. Click **Disconnect** when done
+
+### **2. Database Query Interface**
+Access at: http://localhost:8000/database
+
+**Query Features:**
+- Execute SQL SELECT queries on the interview database
+- View session data, employee performance, and question analytics
+- Sample queries provided for common analysis tasks
+- Real-time results with sortable tables
+- Security-protected (read-only access)
 
 ## Architecture
 
--   **Backend**: FastAPI server with WebSocket connections for real-time communication
--   **Session Management**: Each connection gets a unique session with the OpenAI Realtime API
--   **Audio Processing**: 24kHz mono audio capture and playback
--   **Event Handling**: Full event stream processing with transcript generation
--   **Frontend**: Vanilla JavaScript with clean, responsive CSS
+### **Backend Components:**
+- **FastAPI server** with WebSocket connections for real-time communication
+- **SQL Interview Agent** with concise, technical interviewing behavior
+- **SQLite database** with comprehensive session tracking and employee management
+- **Function tools** for question logging, response evaluation, and report generation
+- **RESTful API** for database querying and analytics
 
-The demo showcases the core patterns for building realtime voice applications with the OpenAI Agents SDK.
+### **Frontend Components:**
+- **Interview Interface** (`static/index.html`) - Voice-based SQL interviews with employee ID tracking
+- **Database Interface** (`static/database.html`) - Web-based SQL query tool for data analysis
+- **Vanilla JavaScript** with WebSocket communication and responsive CSS
+
+### **Database Schema:**
+- `employees` - Employee records and metadata
+- `interview_sessions` - Session tracking with employee linking
+- `interview_questions` - Question categorization and difficulty tracking
+- `interview_responses` - Response evaluation with scoring and feedback
+- `session_reports` - Comprehensive performance reports
+
+### **Agent Behavior:**
+- **Concise responses** (under 2 sentences)
+- **Intermediate/Advanced focus** - No basic SQL questions
+- **Technical categories**: joins, subqueries, window_functions, CTEs, performance optimization
+- **Real-time evaluation** with 0.0-1.0 scoring scale
+
+## Sample Database Queries
+
+```sql
+-- View recent interview sessions
+SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;
+
+-- Employee performance summary  
+SELECT employee_id, COUNT(*) as sessions, AVG(overall_score) as avg_score
+FROM interview_sessions 
+WHERE employee_id IS NOT NULL 
+GROUP BY employee_id;
+
+-- Question difficulty distribution
+SELECT category, difficulty, COUNT(*) as count
+FROM interview_questions 
+GROUP BY category, difficulty;
+```
+
+## Development Notes
+
+- **Python 3.12+** required
+- **OpenAI Realtime API** requires paid account with beta access
+- **HTTPS/localhost** required for browser microphone permissions
+- **Database auto-initialization** on first startup
+- **Employee ID tracking** maintains session history and analytics

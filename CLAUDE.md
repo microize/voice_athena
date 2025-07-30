@@ -67,11 +67,13 @@ Key architectural patterns:
 - Audio streaming with interruption handling
 
 ### Interview Flow
-1. WebSocket connection establishes session
-2. AI agent introduces itself and assesses candidate's SQL level
-3. Progressive difficulty questions based on responses
-4. Real-time feedback and hint system using function tools
-5. Session cleanup on disconnect
+1. Employee enters ID and submits for session tracking
+2. WebSocket connection establishes session with employee linking
+3. Concise SQL interviewer asks intermediate/advanced questions only
+4. Real-time response evaluation with 0.0-1.0 scoring
+5. 4-6 questions total with immediate feedback
+6. Final session report generated automatically
+7. Session cleanup on disconnect
 
 ## Environment Setup
 
@@ -107,7 +109,9 @@ The SQL interviewer agent automatically:
 4. Ends the database session upon completion
 
 ### Frontend Features
-- Employee ID input field for session tracking
+- **Main Interface** (`/`): Employee ID input → Submit → Connect → Voice Interview
+- **Database Interface** (`/database`): Web-based SQL query tool for data analysis
+- Employee ID validation and session flow control
 - Enhanced message formatting for session reports
 - Structured display of performance metrics and recommendations
 
@@ -117,10 +121,27 @@ The SQL interviewer agent automatically:
 - **Database**: SQLite with async support (aiosqlite)
 - **Audio**: WebAudio API for real-time processing
 
+## Application URLs
+
+- **Main Interview Interface**: `http://localhost:8000/` - Voice-based SQL interviews
+- **Database Query Interface**: `http://localhost:8000/database` - SQL analytics and reporting
+- **WebSocket Endpoint**: `/ws/{session_id}` - Real-time communication
+- **Query API**: `/api/query` - Execute SQL queries (POST)
+
+## Agent Configuration
+
+The SQL interviewer agent is configured for:
+- **Concise behavior**: Responses under 2 sentences, no small talk
+- **Technical focus**: Only intermediate/advanced SQL questions
+- **Question categories**: joins, subqueries, window_functions, cte, performance, indexing, query_optimization
+- **Automatic logging**: Every question and response tracked
+- **Scoring system**: 0.0-1.0 scale with immediate feedback
+
 ## Development Notes
 - Python project requires Python 3.12+
 - OpenAI Realtime API requires paid account with beta access
 - Audio capture requires HTTPS or localhost for browser permissions
 - Session management prevents memory leaks through proper cleanup
 - Database automatically initializes on first startup
-- Employee ID is optional - sessions work without it but won't be tracked long-term
+- Employee ID is required - sessions are tracked by employee for analytics
+- Database interface provides read-only access for security

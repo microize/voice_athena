@@ -13,7 +13,9 @@
       "Bash(uv sync:*)",
       "Bash(ls:*)",
       "Bash(timeout 10s uv run:*)",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "Bash(sqlite3:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

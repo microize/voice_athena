@@ -37,6 +37,16 @@ class RealtimeDemo {
         this.debugPanel = document.getElementById('debugPanel');
         this.eventsContent = document.getElementById('eventsContent');
         this.toolsContent = document.getElementById('toolsContent');
+        
+        // Employee ID elements
+        this.employeeIdInput = document.getElementById('employeeId');
+        this.submitEmployeeBtn = document.getElementById('submitEmployeeBtn');
+        this.preConnectInstructions = document.getElementById('preConnectInstructions');
+        this.postSubmitInstructions = document.getElementById('postSubmitInstructions');
+        
+        // Employee state
+        this.employeeId = null;
+        this.isEmployeeSubmitted = false;
     }
     
     setupEventListeners() {
@@ -55,6 +65,82 @@ class RealtimeDemo {
         this.debugToggle.addEventListener('change', () => {
             this.toggleDebugMode();
         });
+        
+        // Employee ID submission
+        this.submitEmployeeBtn.addEventListener('click', () => {
+            this.submitEmployeeId();
+        });
+        
+        // Allow Enter key to submit employee ID
+        this.employeeIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.submitEmployeeId();
+            }
+        });
+        
+        // Enable/disable submit button based on input
+        this.employeeIdInput.addEventListener('input', () => {
+            const hasValue = this.employeeIdInput.value.trim().length > 0;
+            this.submitEmployeeBtn.disabled = !hasValue;
+        });
+    }
+    
+    submitEmployeeId() {
+        const employeeId = this.employeeIdInput.value.trim();
+        
+        if (!employeeId) {
+            this.showEmployeeStatus('Please enter an Employee ID', 'error');
+            return;
+        }
+        
+        // Basic validation - alphanumeric only, max 10 chars
+        if (!/^[a-zA-Z0-9]+$/.test(employeeId)) {
+            this.showEmployeeStatus('Employee ID must contain only letters and numbers', 'error');
+            return;
+        }
+        
+        this.employeeId = employeeId;
+        this.isEmployeeSubmitted = true;
+        
+        // Update UI
+        this.employeeIdInput.disabled = true;
+        this.submitEmployeeBtn.disabled = true;
+        this.submitEmployeeBtn.textContent = 'Submitted';
+        
+        // Show success status
+        this.showEmployeeStatus(`Employee ID: ${employeeId} submitted successfully`, 'success');
+        
+        // Enable connect button and update instructions
+        this.connectBtn.disabled = false;
+        this.preConnectInstructions.style.display = 'none';
+        this.postSubmitInstructions.style.display = 'block';
+    }
+    
+    showEmployeeStatus(message, type) {
+        // Remove any existing status
+        const existingStatus = document.querySelector('.employee-status');
+        if (existingStatus) {
+            existingStatus.remove();
+        }
+        
+        // Create new status element
+        const statusDiv = document.createElement('div');
+        statusDiv.className = `employee-status ${type}`;
+        statusDiv.innerHTML = `
+            <div class="employee-status-icon"></div>
+            <span>${message}</span>
+        `;
+        
+        // Insert after the form
+        const form = document.querySelector('.employee-id-form');
+        form.parentNode.insertBefore(statusDiv, form.nextSibling);
+        
+        // Remove error status after 5 seconds
+        if (type === 'error') {
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
     }
     
     toggleDebugMode() {
@@ -77,6 +163,15 @@ class RealtimeDemo {
                 console.log('WebSocket connection opened');
                 this.isConnected = true;
                 this.updateUI();
+                
+                // Send employee ID if available
+                if (this.employeeId) {
+                    this.ws.send(JSON.stringify({
+                        type: 'employee_id',
+                        employee_id: this.employeeId
+                    }));
+                }
+                
                 this.startAudioCapture();
             };
             
@@ -145,10 +240,20 @@ class RealtimeDemo {
     }
     
     clearEmptyState() {
+        // Remove welcome content
         const emptyState = this.messagesContainer.querySelector('.empty-state');
         if (emptyState) {
             emptyState.remove();
         }
+        
+        // Reset container styles for chat layout
+        this.messagesContainer.style.display = '';
+        this.messagesContainer.style.flexDirection = '';
+        this.messagesContainer.style.alignItems = '';
+        this.messagesContainer.style.justifyContent = '';
+        this.messagesContainer.style.textAlign = '';
+        this.messagesContainer.style.padding = '';
+        this.messagesContainer.style.color = '';
     }
     
     addMessage(type, content) {
