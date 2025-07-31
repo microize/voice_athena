@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 class QueryRequest(BaseModel):
     query: str
 
-
 # Database setup
 DB_PATH = "interview_sessions.db"
 
@@ -168,7 +167,6 @@ async def generate_session_report(strengths: str, weaknesses: str, recommendatio
     
     return f"Session completed. Overall score: {overall_score:.1f}/1.0"
 
-
 agent = RealtimeAgent(
     name="SQL Interviewer",
     instructions="""Your name is **Athena**, a warm and refined SQL technical interviewer, specializing in **intermediate and advanced** SQL topics.  
@@ -202,7 +200,6 @@ You will conduct a **SQL interview** with a candidate, assessing their technical
     tools=[log_question_asked, log_response_evaluation, generate_session_report],
 )
 
-
 class RealtimeWebSocketManager:
     def __init__(self):
         self.active_sessions: dict[str, RealtimeSession] = {}
@@ -228,18 +225,31 @@ class RealtimeWebSocketManager:
             logger.info(f"Created interview session {current_session_id}")
             
             logger.info(f"Creating RealtimeRunner for session {session_id}")
-            runner = RealtimeRunner(agent)
             
-            # Configure model settings for English language and appropriate voice
-            model_config = {
-                "voice": "nova",  # English-speaking voice
-                "input_audio_transcription": {
-                    "model": "gpt-4o-mini-transcribe",
-                    "language": "en"  # Explicitly set English for transcription
+            # Configure complete model settings following OpenAI Agents SDK quickstart
+            config = {
+                "model_settings": {
+                    "model_name": "gpt-4o-realtime-preview",
+                    "voice": "shimmer",  # English-speaking voice
+                    "modalities": ["text", "audio"],
+                    "input_audio_transcription": {
+                        "model": "whisper-1"
+                    },
+                    "turn_detection": {
+                        "type": "server_vad",
+                        "threshold": 0.5,
+                        "prefix_padding_ms": 300,
+                        "silence_duration_ms": 200
+                    }
                 }
             }
             
-            session_context = await runner.run(model_config=model_config)
+            runner = RealtimeRunner(
+                starting_agent=agent,
+                config=config
+            )
+            
+            session_context = await runner.run()
             session = await session_context.__aenter__()
             self.active_sessions[session_id] = session
             self.session_contexts[session_id] = session_context
@@ -388,9 +398,7 @@ class RealtimeWebSocketManager:
 
         return base_event
 
-
 manager = RealtimeWebSocketManager()
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -399,9 +407,7 @@ async def lifespan(app: FastAPI):
     logger.info("Database initialized")
     yield
 
-
 app = FastAPI(lifespan=lifespan)
-
 
 @app.post("/api/query")
 async def execute_query(request: QueryRequest):
@@ -436,7 +442,6 @@ async def execute_query(request: QueryRequest):
         logger.error(f"Query execution error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
-
 @app.websocket("/ws/{session_id}")
 async def websocket_endpoint(websocket: WebSocket, session_id: str):
     logger.info(f"WebSocket connection request for session {session_id}")
@@ -469,20 +474,16 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
         traceback.print_exc()
         await manager.disconnect(session_id)
 
-
 @app.get("/")
 async def read_index():
     return FileResponse("static/index.html")
-
 
 @app.get("/database")
 async def read_database():
     return FileResponse("static/database.html")
 
-
 # Mount static files last to avoid route conflicts
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
-
 
 if __name__ == "__main__":
     import uvicorn

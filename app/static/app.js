@@ -10,7 +10,6 @@ class RealtimeDemo {
         this.stream = null;
         this.sessionId = this.generateSessionId();
         
-        // Enhanced audio system inspired by openai-fm
         this.audioQueue = [];
         this.isPlayingAudio = false;
         this.currentAudioSource = null;
