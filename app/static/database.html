@@ -33,15 +33,20 @@
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--background);
             color: var(--foreground);
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
             font-size: 14px;
             line-height: 1.4;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 100%;
+            height: 100vh;
             margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
@@ -62,9 +67,10 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 20px;
-            height: calc(100vh - 140px);
+            flex: 1;
+            min-height: 0;
         }
 
         .query-panel, .results-panel {
@@ -257,10 +263,10 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <!-- <div class="header">
             <h1>Database Query Interface</h1>
             <p>Execute SQL queries on the interview sessions database</p>
-        </div>
+        </div> -->
 
         <div class="main-content">
             <!-- Query Panel -->
