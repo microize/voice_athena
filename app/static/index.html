@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athena - Realtime Interviewer</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='16' cy='16' r='16' fill='%23ff4a00'/%3e%3ctext x='16' y='22' text-anchor='middle' font-family='Arial, sans-serif' font-size='20' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='90' cy='90' r='90' fill='%23ff4a00'/%3e%3ctext x='90' y='120' text-anchor='middle' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #ececec;
+            --foreground: #222;
+            --primary: #ff4a00;
+            --screen: #f3f3f3;
+            --page-max-width: 1300px;
+            --black-10: rgba(0, 0, 0, 0.1);
+            --black-50: rgba(0, 0, 0, 0.5);
+            
+            --radius-xs: 0.125rem;
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+            --radius-4xl: 2rem;
+            
+            --shadow-textarea: rgba(0, 0, 0, 0.15) 0px 1px 2px 0px inset,
+                rgba(0, 0, 0, 0.08) 1px -2px 2px 0px inset;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-size: 14px;
+            line-height: 130%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(to bottom right, #f8f8f8, var(--background) 20%);
+            background-repeat: no-repeat;
+        }
+
+        svg {
+            display: block;
+            flex-shrink: 0;
+        }
+
+        /* Header */
+        .header {
+            padding: 16px 20px;
+            width: 100%;
+            max-width: var(--page-max-width);
+            margin: 0 auto;
+        }
+
+        .link {
+            text-transform: uppercase;
+            color: var(--foreground);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+
+        .link:hover {
+            color: rgba(34, 34, 34, 0.7);
+        }
+
+        /* Debug Toggle Switch */
+        .debug-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            margin-top: -8px;
+        }
+
+        .debug-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .debug-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 24px;
+            transition: 0.3s;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .debug-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .debug-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .debug-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Main Layout */
+        .main-container {
+            flex: 1;
+            display: flex;
+            width: 100%;
+            margin: 0;
+            padding: 0 20px 20px 20px;
+            gap: 24px;
+            height: calc(100vh - 32px);
+            align-items: stretch;
+        }
+
+        .left-panel,
+        .chat-section,
+        .debug-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Chat Interface */
+        .chat-section {
+            flex: 1;
+            justify-content: space-between;
+            padding: 24px;
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: var(--foreground);
+        }
+
+        .chat-subtitle {
+            color: rgba(34, 34, 34, 0.7);
+            font-size: 12px;
+        }
+
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 4px;
+        }
+
+        /* Custom scrollbar for messages */
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.3);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.5);
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message.assistant .message-avatar {
+            background: #f4f4f4;
+            color: var(--foreground);
+        }
+
+        .message-content {
+            flex: 1;
+            max-width: 70%;
+        }
+
+        .message-bubble {
+            background: white;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            word-wrap: break-word;
+            line-height: 1.4;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.05),
+                        0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: var(--radius-sm);
+        }
+
+        .message.assistant .message-bubble {
+            border-bottom-left-radius: var(--radius-sm);
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: rgba(34, 34, 34, 0.5);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .message.assistant .message-time {
+            text-align: left;
+        }
+
+        /* Controls */
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0 0 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        #connectBtn {
+            flex: 1;
+        }
+
+        #helpBtn {
+            flex: 0 0 auto;
+            min-width: 80px;
+        }
+
+        /* Button Styles */
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            height: 48px;
+            background: #f4f4f4;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+            font-family: inherit;
+            font-size: 12px;
+            transition: box-shadow 0.3s ease;
+            box-shadow: rgb(255, 255, 255) 1px 1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.15) -1px -1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.26) 0.444584px 0.444584px 0.628737px -1px,
+                        rgba(0, 0, 0, 0.247) 1.21072px 1.21072px 1.71222px -1.5px,
+                        rgba(0, 0, 0, 0.23) 2.6583px 2.6583px 3.75941px -2.25px,
+                        rgba(0, 0, 0, 0.192) 5.90083px 5.90083px 8.34503px -3px,
+                        rgba(0, 0, 0, 0.056) 10px 10px 21.2132px -3.75px,
+                        -0.5px -0.5px 0 0 rgb(0 0 0 / 5%);
+        }
+
+        .button:active {
+            box-shadow: inset 0.5px 0.5px 1px #fff, 
+                        inset -0.5px -0.5px 1px #00000026,
+                        0.222px 0.222px 0.314px -0.5px #0003,
+                        0.605px 0.605px 0.856px -1px #0000002e,
+                        1.329px 1.329px 1.88px -1.5px #00000040,
+                        2.95px 2.95px 4.172px -2px #0000001a,
+                        2.5px 2.5px 3px -2.5px #00000026,
+                        -0.5px -0.5px 0 0 rgb(0 0 0 / 10%);
+        }
+
+        .button.primary {
+            color: #fff;
+            background: var(--primary);
+            box-shadow: inset 1px 1px 1px #ffffffd4, 
+                        inset -1px -1px 1px #0000003b,
+                        0.444584px 0.444584px 0.628737px -1px #00000042,
+                        1.21072px 1.21072px 1.71222px -1.5px #0000003f,
+                        2.6583px 2.6583px 3.75941px -2.25px #0000003b,
+                        5.90083px 5.90083px 8.34503px -3px #00000031,
+                        10px 10px 21.2132px -3.75px #0000003b,
+                        -0.5px -0.5px #952b0087;
+        }
+
+        .button.primary:active {
+            box-shadow: inset 0.5px 0.5px 1px #fff, 
+                        inset -0.5px -0.5px 1px #0000005b,
+                        0.222px 0.222px 0.314px -1px #0003,
+                        0.605px 0.605px 0.856px -1px #0000002e,
+                        1.329px 1.329px 1.88px -1.5px #00000040,
+                        2.95px 2.95px 4.172px -2px #0000001a,
+                        2.5px 2.5px 3px -2.5px #00000026,
+                        -0.5px -0.5px #00000022;
+        }
+
+        .button.secondary {
+            color: #fff;
+            background: #222;
+            box-shadow: inset 1px 1px 1px #ffffffb3, 
+                        inset -1px -1px 1px #0000003b,
+                        0.444584px 0.444584px 0.628737px -0.75px #00000042,
+                        1.21072px 1.21072px 1.71222px -1.5px #0000003f,
+                        2.6583px 2.6583px 3.75941px -2.25px #0000003b,
+                        5.90083px 5.90083px 8.34503px -3px #00000031,
+                        14px 14px 21.2132px -3.75px #00000033,
+                        -0.5px -0.5px #000000af;
+        }
+
+        .button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .mic-button {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mic-button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mic-button.listening .mic-button-content span {
+            display: none;
+        }
+
+        .mic-button.listening .mic-button-content::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            width: 30px;
+            height: 16px;
+            z-index: 1;
+        }
+
+        .mic-button.listening .mic-button-content::after {
+            background-image: 
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary)),
+                linear-gradient(var(--primary), var(--primary));
+            background-size: 2px 4px, 2px 8px, 2px 12px, 2px 6px, 2px 3px;
+            background-position: 0px center, 4px center, 8px center, 12px center, 16px center;
+            background-repeat: no-repeat;
+            animation: audioFrequency 1.2s infinite;
+        }
+
+        @keyframes audioFrequency {
+            0%, 100% { 
+                background-size: 2px 4px, 2px 8px, 2px 12px, 2px 6px, 2px 3px;
+            }
+            25% { 
+                background-size: 2px 8px, 2px 4px, 2px 6px, 2px 12px, 2px 7px;
+            }
+            50% { 
+                background-size: 2px 3px, 2px 12px, 2px 4px, 2px 8px, 2px 11px;
+            }
+            75% { 
+                background-size: 2px 10px, 2px 6px, 2px 14px, 2px 4px, 2px 2px;
+            }
+        }
+
+        /* Status */
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(34, 34, 34, 0.7);
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status.connected .status-indicator {
+            background: var(--primary);
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            /* background: var(--screen);
+            border-radius: var(--radius-lg); */
+            /* padding: 20px; */
+            /* box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8),
+                        inset -1px -1px 2px rgba(0,0,0,0.1); */
+        }
+
+        .left-panel-top {
+            display: flex;
+            /* margin-top: 16px; */
+            flex-direction: column;
+        }
+
+        .left-panel .description {
+            margin-top: 10px;
+        }
+
+        .left-panel .link {
+            margin-bottom: 16px;
+        }
+
+        /* Logo Info Panel */
+        .logo-info-panel {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .logo-info-panel .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+            color: var(--foreground);
+            font-size: 16px;
+        }
+
+        .logo-info-panel .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logo-info-panel .description {
+            color: rgba(34, 34, 34, 0.7);
+            line-height: 1.4;
+            font-size: 13px;
+        }
+
+        .info-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .debug-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .debug-label {
+            font-size: 11px;
+            color: rgba(34, 34, 34, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+
+        /* Debug Panel */
+        .debug-panel {
+            width: 350px;
+            flex-shrink: 0;
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .debug-panel.active {
+            display: flex;
+        }
+
+        .debug-header {
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            color: rgba(34, 34, 34, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .debug-content {
+            flex: 1;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .debug-section {
+            margin-bottom: 16px;
+        }
+
+        .debug-section-title {
+            font-size: 10px;
+            font-weight: 400;
+            color: rgba(34, 34, 34, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .event {
+            background: white;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            overflow: hidden;
+            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.8), 
+                        inset -1px -1px 1px rgba(0,0,0,0.05),
+                        0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .event-header {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            background: #f9f9f9;
+            transition: background-color 0.2s;
+        }
+
+        .event-header:hover {
+            background: #f0f0f0;
+        }
+
+        .event-type {
+            font-weight: 400;
+            color: var(--primary);
+        }
+
+        .event-toggle {
+            color: rgba(34, 34, 34, 0.5);
+            font-size: 8px;
+        }
+
+        .event-content {
+            padding: 12px;
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            font-size: 9px;
+            color: rgba(34, 34, 34, 0.7);
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .event-content.expanded {
+            display: block;
+        }
+
+        /* Tool Events */
+        .event.tool .event-header {
+            background: #fef3e2;
+            border-left: 2px solid #f59e0b;
+        }
+
+        .event.handoff .event-header {
+            background: #f3e8ff;
+            border-left: 2px solid #8b5cf6;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 16px;
+            color: rgba(34, 34, 34, 0.5);
+        }
+
+        .empty-state-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-subtext {
+            font-size: 11px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                padding: 0 16px;
+            }
+            
+            .left-panel {
+                width: 100%;
+                order: -1;
+            }
+            
+            .debug-panel {
+                width: 100%;
+                order: 2;
+            }
+            
+            .chat-section {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                gap: 16px;
+            }
+            
+            .left-panel {
+                width: 280px;
+            }
+            
+            .debug-panel {
+                width: 350px;
+            }
+        }
+
+        /* SQL Interview Specific Styling */
+        .sql-code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 8px 0;
+            border-left: 3px solid var(--primary);
+            overflow-x: auto;
+        }
+
+        .sql-keyword {
+            color: #569cd6;
+            font-weight: bold;
+        }
+
+        .sql-string {
+            color: #ce9178;
+        }
+
+        .sql-comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .interview-status {
+            background: #f0f8ff;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .interview-feedback {
+            background: #f0fff0;
+            border-left: 3px solid #28a745;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: var(--radius-sm);
+        }
+
+        .interview-hint {
+            background: #fff8dc;
+            border-left: 3px solid #ffc107;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Help Modal */
+        .help-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .help-modal.active {
+            display: flex;
+        }
+
+        .help-modal-content {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8),
+                        inset -1px -1px 2px rgba(0,0,0,0.1),
+                        0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .help-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .help-modal-title {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--foreground);
+        }
+
+        .help-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: rgba(34, 34, 34, 0.7);
+            padding: 4px;
+        }
+
+        .help-close-btn:hover {
+            color: var(--foreground);
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+        }
+
+        .help-section-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .help-section-content {
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(34, 34, 34, 0.8);
+        }
+
+        .help-section-content ul {
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .help-section-content li {
+            margin-bottom: 4px;
+        }
+
+        /* Employee ID Panel */
+        .employee-id-panel {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .employee-id-header {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--foreground);
+            margin-bottom: 8px;
+        }
+
+        .employee-id-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .employee-id-label {
+            font-size: 12px;
+            color: rgba(34, 34, 34, 0.7);
+            margin-bottom: 4px;
+        }
+
+        .employee-id-input {
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 12px;
+            background: white;
+            box-shadow: var(--shadow-textarea);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .employee-id-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-textarea), 0 0 0 2px rgba(255, 74, 0, 0.1);
+        }
+
+        .employee-submit-btn {
+            font-size: 12px;
+            padding: 10px 16px;
+            height: 40px;
+        }
+
+        .employee-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Status indicators */
+        .employee-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            margin-top: 8px;
+        }
+
+        .employee-status.success {
+            background: #f0fff0;
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .employee-status.error {
+            background: #fff5f5;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .employee-status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .employee-status.success .employee-status-icon {
+            background: #28a745;
+        }
+
+        .employee-status.error .employee-status-icon {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Header is now empty but kept for spacing -->
+    </div>
+    
+    <div class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="left-panel-top">
+                <!-- Logo and Info Section -->
+                <div class="logo-info-panel">
+                    <div class="logo">
+                        <div class="logo-icon">A</div>
+                        <span>Athena</span>
+                    </div>
+                    <div class="description">
+                    Practice SQL technical interviews with an AI interviewer. Real-time voice conversation to test your database skills.
+                </div>
+                </div>
+                
+                <!-- Employee ID Section -->
+                <div class="employee-id-panel">
+                    <div class="employee-id-header">Employee Information</div>
+                    <div class="employee-id-form">
+                        <label for="employeeId" class="employee-id-label">Employee ID</label>
+                        <input type="text" id="employeeId" class="employee-id-input" placeholder="Enter your Employee ID" maxlength="10">
+                        <button id="submitEmployeeBtn" class="button primary employee-submit-btn" disabled>Submit</button>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+            
+            <!-- Debug Toggle at Bottom -->
+            <div class="debug-toggle-container">
+                <span class="debug-label">Debug Mode</span>
+                <label class="debug-switch">
+                    <input type="checkbox" id="debugToggle">
+                    <span class="debug-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <!-- <div class="chat-header">
+                <h1 class="chat-title">SQL Interview Assistant</h1>
+                <p class="chat-subtitle">Connect and start speaking to begin your SQL technical interview</p>
+            </div> -->
+            
+            <div id="messagesContainer" class="messages-container">
+                <div class="empty-state" style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    padding: 60px 20px;
+                    color: #333;
+                    height: 100%;
+                    min-height: 400px;
+                ">
+                <!-- Logo -->
+                <div class="athena-logo" style="margin-bottom: 20px;">
+                    <img src="athena-logo.png" alt="Athena Logo" style="
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    " onerror="this.style.display='none'">
+                </div>
+
+                <!-- Greeting -->
+                <div class="empty-state-text" style="font-size: 26px; font-weight: bold; margin-bottom: 18px;">
+                    <span style="color: var(--primary);">Hi, I’m Athena</span>
+                </div>
+
+                <!-- Subtext -->
+                <div class="empty-state-subtext" style="font-size: 18px; color: #999; margin-bottom: 5px; line-height: 1.5;">
+                    We’ll begin with SQL interview questions to assess your skills.
+                </div>
+
+                <div class="empty-state-subtext" style="font-size: 18px; color: #999; margin-bottom: 30px; line-height: 1.5;">
+                    Follow the steps below to start your interview:
+                </div>
+
+                <!-- Step 1 -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    font-size: 14px;
+                    color: #666;
+                    font-weight: bold;
+                ">
+                    Step 1: Enter your Employee ID in the left-side panel and click Submit.
+                </div>
+
+                <!-- Step 2 -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    font-size: 14px;
+                    color: #666;
+                    font-weight: bold;
+                "> Step 2: Click Connect at the bottom to start your SQL interview.
+                </div>
+                </div>
+            </div>
+
+
+
+            
+            <div class="controls-container">
+                <button id="connectBtn" class="button primary" disabled>Connect</button>
+                <button id="micBtn" class="button mic-button secondary" disabled>
+                    <div class="mic-button-content">
+                        <span>Disconnected</span>
+                    </div>
+                </button>
+                <button id="helpBtn" class="button">
+                    <span>❓</span>
+                    <span>Help</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right Debug Panel -->
+        <div id="debugPanel" class="debug-panel">
+            <div class="debug-header">Debug Information</div>
+            <div class="debug-content">
+                <div class="debug-section">
+                    <div class="debug-section-title">Event Stream</div>
+                    <div id="eventsContent">
+                        <!-- Events will appear here -->
+                    </div>
+                </div>
+                <div class="debug-section">
+                    <div class="debug-section-title">Tools & Handoffs</div>
+                    <div id="toolsContent">
+                        <!-- Tools and handoffs will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="help-modal">
+        <div class="help-modal-content">
+            <div class="help-modal-header">
+                <h2 class="help-modal-title">How to Use Athena</h2>
+                <button class="help-close-btn" onclick="closeHelpModal()">×</button>
+            </div>
+            
+            <div class="help-section">
+                <div class="help-section-title">Getting Started</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Enter your Employee ID in the left panel and click "Submit"</li>
+                        <li>Click the "Connect" button to establish a connection</li>
+                        <li>Allow microphone permissions when prompted</li>
+                        <li>The mic button will show "Connected" when ready</li>
+                        <li>Start speaking naturally to begin your SQL interview</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">During the Interview</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Athena will introduce herself and assess your SQL skill level</li>
+                        <li>Answer questions by speaking clearly into your microphone</li>
+                        <li>Questions will progress from basic to advanced based on your responses</li>
+                        <li>You can ask for hints or clarification at any time</li>
+                        <li>The waveform animation shows when Athena is listening</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">Tips for Success</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Speak clearly and at a moderate pace</li>
+                        <li>Think out loud to explain your SQL reasoning</li>
+                        <li>Don't hesitate to ask questions or request examples</li>
+                        <li>Use the debug panel to see real-time conversation data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <div class="help-section-title">Troubleshooting</div>
+                <div class="help-section-content">
+                    <ul>
+                        <li>Ensure your microphone is working and not muted</li>
+                        <li>Check that you're using HTTPS or localhost</li>
+                        <li>Refresh the page if connection issues persist</li>
+                        <li>Enable the debug panel for detailed connection info</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Help modal functionality
+        function openHelpModal() {
+            document.getElementById('helpModal').classList.add('active');
+        }
+
+        function closeHelpModal() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
+        // Add click handler to help button
+        document.getElementById('helpBtn').addEventListener('click', openHelpModal);
+
+        // Close modal when clicking outside
+        document.getElementById('helpModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeHelpModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHelpModal();
+            }
+        });
+    </script>
+</body>
+</html>

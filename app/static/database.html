@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Query Interface - Athena Realtime Interviewer</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='16' cy='16' r='16' fill='%23ff4a00'/%3e%3ctext x='16' y='22' text-anchor='middle' font-family='Arial, sans-serif' font-size='20' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='90' cy='90' r='90' fill='%23ff4a00'/%3e%3ctext x='90' y='120' text-anchor='middle' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #ececec;
+            --foreground: #222;
+            --primary: #ff4a00;
+            --screen: #f3f3f3;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--background);
+            color: var(--foreground);
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 100%;
+            height: 100vh;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .header p {
+            color: rgba(34, 34, 34, 0.7);
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .query-panel, .results-panel {
+            background: var(--screen);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                        inset -1px -1px 2px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .query-editor {
+            flex: 1;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            background: white;
+            resize: none;
+            outline: none;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .query-editor:focus {
+            border-color: var(--primary);
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1), 
+                        0 0 0 2px rgba(255, 74, 0, 0.1);
+        }
+
+        .query-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: rgb(255, 255, 255) 1px 1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.15) -1px -1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+        }
+
+        .btn:active {
+            box-shadow: inset 0.5px 0.5px 1px #fff, 
+                        inset -0.5px -0.5px 1px #00000026;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f4f4f4;
+            color: var(--foreground);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            background: white;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .results-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .results-table tr:hover {
+            background: rgba(255, 74, 0, 0.05);
+        }
+
+        .status-bar {
+            margin-top: 12px;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-size: 11px;
+            display: none;
+        }
+
+        .status-bar.success {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            display: block;
+        }
+
+        .status-bar.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            display: block;
+        }
+
+        .status-bar.info {
+            background: rgba(255, 74, 0, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            display: block;
+        }
+
+        .sample-queries {
+            margin-top: 16px;
+        }
+
+        .sample-query {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 11px;
+        }
+
+        .sample-query:hover {
+            background: rgba(255, 74, 0, 0.05);
+            border-color: var(--primary);
+        }
+
+        .sample-query-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--primary);
+        }
+
+        .sample-query-sql {
+            color: rgba(34, 34, 34, 0.7);
+            font-family: inherit;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(34, 34, 34, 0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <div class="header">
+            <h1>Database Query Interface</h1>
+            <p>Execute SQL queries on the interview sessions database</p>
+        </div> -->
+
+        <div class="main-content">
+            <!-- Query Panel -->
+            <div class="query-panel">
+                <div class="panel-header">SQL Query Editor</div>
+                
+                <textarea 
+                    id="queryEditor" 
+                    class="query-editor" 
+                    placeholder="Enter your SQL query here...
+Example: SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;"
+                ></textarea>
+
+                <div class="query-controls">
+                    <button id="executeBtn" class="btn btn-primary">Execute Query</button>
+                    <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div id="statusBar" class="status-bar"></div>
+
+                <div class="sample-queries">
+                    <div class="panel-header" style="font-size: 14px; margin-bottom: 12px;">Sample Queries</div>
+                    
+                    <div class="sample-query" data-query="SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;">
+                        <div class="sample-query-title">Recent Sessions</div>
+                        <div class="sample-query-sql">SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;</div>
+                    </div>
+
+                    <div class="sample-query" data-query="SELECT s.id, s.employee_id, e.name, s.overall_score FROM interview_sessions s LEFT JOIN employees e ON s.employee_id = e.id WHERE s.overall_score IS NOT NULL ORDER BY s.overall_score DESC;">
+                        <div class="sample-query-title">Sessions with Scores</div>
+                        <div class="sample-query-sql">SELECT s.id, s.employee_id, e.name, s.overall_score FROM interview_sessions s LEFT JOIN employees e ON s.employee_id = e.id WHERE s.overall_score IS NOT NULL ORDER BY s.overall_score DESC;</div>
+                    </div>
+
+                    <div class="sample-query" data-query="SELECT q.category, q.difficulty, COUNT(*) as count FROM interview_questions q GROUP BY q.category, q.difficulty ORDER BY q.category, q.difficulty;">
+                        <div class="sample-query-title">Questions by Category</div>
+                        <div class="sample-query-sql">SELECT q.category, q.difficulty, COUNT(*) as count FROM interview_questions q GROUP BY q.category, q.difficulty ORDER BY q.category, q.difficulty;</div>
+                    </div>
+
+                    <div class="sample-query" data-query="SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE employee_id IS NOT NULL GROUP BY employee_id ORDER BY session_count DESC;">
+                        <div class="sample-query-title">Employee Performance</div>
+                        <div class="sample-query-sql">SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE employee_id IS NOT NULL GROUP BY employee_id ORDER BY session_count DESC;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <div class="panel-header">Query Results</div>
+                
+                <div class="results-container">
+                    <div id="resultsContent" class="no-results">
+                        Execute a query to see results here
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class DatabaseQuery {
+            constructor() {
+                this.queryEditor = document.getElementById('queryEditor');
+                this.executeBtn = document.getElementById('executeBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.statusBar = document.getElementById('statusBar');
+                this.resultsContent = document.getElementById('resultsContent');
+                
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.executeBtn.addEventListener('click', () => this.executeQuery());
+                this.clearBtn.addEventListener('click', () => this.clearQuery());
+                
+                // Sample query clicks
+                document.querySelectorAll('.sample-query').forEach(query => {
+                    query.addEventListener('click', (e) => {
+                        const sql = e.currentTarget.getAttribute('data-query');
+                        this.queryEditor.value = sql;
+                    });
+                });
+
+                // Ctrl+Enter to execute
+                this.queryEditor.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.key === 'Enter') {
+                        this.executeQuery();
+                    }
+                });
+            }
+
+            async executeQuery() {
+                const query = this.queryEditor.value.trim();
+                
+                if (!query) {
+                    this.showStatus('Please enter a SQL query', 'error');
+                    return;
+                }
+
+                this.executeBtn.disabled = true;
+                this.executeBtn.textContent = 'Executing...';
+                this.resultsContent.innerHTML = '<div class="loading">Executing query...</div>';
+
+                try {
+                    const response = await fetch('/api/query', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query: query })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Query failed');
+                    }
+
+                    this.displayResults(data.results, data.columns);
+                    this.showStatus(`Query executed successfully. ${data.results.length} rows returned.`, 'success');
+
+                } catch (error) {
+                    this.showStatus(`Error: ${error.message}`, 'error');
+                    this.resultsContent.innerHTML = `<div class="no-results">❌ ${error.message}</div>`;
+                } finally {
+                    this.executeBtn.disabled = false;
+                    this.executeBtn.textContent = 'Execute Query';
+                }
+            }
+
+            displayResults(results, columns) {
+                if (!results || results.length === 0) {
+                    this.resultsContent.innerHTML = '<div class="no-results">No results found</div>';
+                    return;
+                }
+
+                let html = '<table class="results-table"><thead><tr>';
+                
+                // Headers
+                columns.forEach(col => {
+                    html += `<th>${col}</th>`;
+                });
+                html += '</tr></thead><tbody>';
+
+                // Rows
+                results.forEach(row => {
+                    html += '<tr>';
+                    row.forEach(cell => {
+                        const cellValue = cell === null ? '<em>NULL</em>' : String(cell);
+                        html += `<td>${cellValue}</td>`;
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                this.resultsContent.innerHTML = html;
+            }
+
+            showStatus(message, type) {
+                this.statusBar.textContent = message;
+                this.statusBar.className = `status-bar ${type}`;
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        this.statusBar.style.display = 'none';
+                    }, 3000);
+                }
+            }
+
+            clearQuery() {
+                this.queryEditor.value = '';
+                this.resultsContent.innerHTML = '<div class="no-results">Execute a query to see results here</div>';
+                this.statusBar.style.display = 'none';
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new DatabaseQuery();
+        });
+    </script>
+</body>
+</html>
