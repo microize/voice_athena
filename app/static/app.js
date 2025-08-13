@@ -37,51 +37,77 @@ class RealtimeDemo {
         this.eventsContent = document.getElementById('eventsContent');
         this.toolsContent = document.getElementById('toolsContent');
         
-        // Employee ID elements
-        this.employeeIdInput = document.getElementById('employeeId');
-        this.submitEmployeeBtn = document.getElementById('submitEmployeeBtn');
-        this.preConnectInstructions = document.getElementById('preConnectInstructions');
-        this.postSubmitInstructions = document.getElementById('postSubmitInstructions');
-        
-        // Employee state
-        this.employeeId = null;
-        this.isEmployeeSubmitted = false;
+        // User info elements
+        this.userEmailElement = document.getElementById('userEmail');
     }
     
     setupEventListeners() {
-        this.connectBtn.addEventListener('click', () => {
-            if (this.isConnected) {
-                this.disconnect();
-            } else {
-                this.connect();
-            }
+        if (this.connectBtn) {
+            this.connectBtn.addEventListener('click', () => {
+                if (this.isConnected) {
+                    this.disconnect();
+                } else {
+                    this.connect();
+                }
+            });
+        }
+        
+        if (this.micBtn) {
+            this.micBtn.addEventListener('click', () => {
+                this.toggleMute();
+            });
+        }
+        
+        if (this.debugToggle) {
+            this.debugToggle.addEventListener('change', () => {
+                this.toggleDebugMode();
+            });
+        }
+        
+        // Setup debug toggle listener when navigation loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => this.setupDebugToggleListener(), 1000);
         });
         
-        this.micBtn.addEventListener('click', () => {
-            this.toggleMute();
+        // Also setup a MutationObserver to detect when debug toggle is added
+        this.observeDebugToggle();
+    }
+    
+    observeDebugToggle() {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Check if the debug toggle was added
+                        if (node.id === 'debugToggle' || node.querySelector && node.querySelector('#debugToggle')) {
+                            console.log('Debug toggle detected in DOM, setting up listener');
+                            setTimeout(() => this.setupDebugToggleListener(), 100);
+                        }
+                    }
+                });
+            });
         });
         
-        this.debugToggle.addEventListener('change', () => {
-            this.toggleDebugMode();
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
-        
-        // Employee ID submission
-        this.submitEmployeeBtn.addEventListener('click', () => {
-            this.submitEmployeeId();
-        });
-        
-        // Allow Enter key to submit employee ID
-        this.employeeIdInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.submitEmployeeId();
-            }
-        });
-        
-        // Enable/disable submit button based on input
-        this.employeeIdInput.addEventListener('input', () => {
-            const hasValue = this.employeeIdInput.value.trim().length > 0;
-            this.submitEmployeeBtn.disabled = !hasValue;
-        });
+    }
+    
+    setupDebugToggleListener() {
+        const debugToggle = document.getElementById('debugToggle');
+        if (debugToggle && !debugToggle.hasEventListener) {
+            console.log('Setting up debug toggle listener');
+            debugToggle.addEventListener('change', () => {
+                console.log('Debug toggle changed');
+                this.toggleDebugMode();
+            });
+            debugToggle.hasEventListener = true;
+        } else if (!debugToggle) {
+            console.log('Debug toggle not found, will retry...');
+            // Retry after navigation loads
+            setTimeout(() => this.setupDebugToggleListener(), 1000);
+        }
     }
     
     submitEmployeeId() {
@@ -143,8 +169,18 @@ class RealtimeDemo {
     }
     
     toggleDebugMode() {
-        this.debugMode = this.debugToggle.checked;
-        this.debugPanel.classList.toggle('active', this.debugMode);
+        // Get current state of debug toggle since it's loaded dynamically
+        const debugToggle = document.getElementById('debugToggle');
+        const debugPanel = document.getElementById('debugPanel');
+        
+        if (debugToggle) {
+            this.debugMode = debugToggle.checked;
+            console.log('Debug mode toggled:', this.debugMode);
+            
+            if (debugPanel) {
+                debugPanel.classList.toggle('active', this.debugMode);
+            }
+        }
     }
     
     generateSessionId() {
@@ -153,24 +189,39 @@ class RealtimeDemo {
     
     async connect() {
         try {
+            // Start interview session with authenticated user
+            const response = await fetch('/api/start-interview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Failed to start interview session');
+            }
+            
+            const sessionData = await response.json();
+            this.sessionId = sessionData.session_id;
+            
             // Clear empty state
             this.clearEmptyState();
             
-            this.ws = new WebSocket(`ws://localhost:8000/ws/${this.sessionId}`);
+            // Use current location for WebSocket to support different environments
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsHost = window.location.host || 'localhost:8002';
+            this.ws = new WebSocket(`${wsProtocol}//${wsHost}/ws/${this.sessionId}`);
             
             this.ws.onopen = () => {
                 console.log('WebSocket connection opened');
                 this.isConnected = true;
                 this.updateUI();
                 
-                // Send employee ID if available
-                if (this.employeeId) {
-                    this.ws.send(JSON.stringify({
-                        type: 'employee_id',
-                        employee_id: this.employeeId
-                    }));
-                }
-                
+                // User email is already set on the server side
                 this.startAudioCapture();
             };
             

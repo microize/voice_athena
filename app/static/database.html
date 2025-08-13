@@ -44,7 +44,7 @@
             max-width: 100%;
             height: 100vh;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px 20px 20px;
             display: flex;
             flex-direction: column;
         }
@@ -71,6 +71,8 @@
             gap: 20px;
             flex: 1;
             min-height: 0;
+            margin: 20px;
+            margin-top: 0;
         }
 
         .query-panel, .results-panel {
@@ -259,14 +261,85 @@
                 grid-template-rows: 1fr 1fr;
             }
         }
+        /* Page specific styles only */
+
+        /* Button Styles */
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: var(--radius-md);
+            padding: 8px 16px;
+            height: 32px;
+            background: #f4f4f4;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+            font-family: inherit;
+            font-size: 11px;
+            transition: box-shadow 0.3s ease;
+            box-shadow: rgb(255, 255, 255) 1px 1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.15) -1px -1px 1px 0px inset,
+                        rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+        }
+
+        .button:active {
+            box-shadow: inset 0.5px 0.5px 1px #fff, 
+                        inset -0.5px -0.5px 1px #00000026;
+        }
+
+        .button.primary {
+            color: #fff;
+            background: var(--primary);
+            box-shadow: inset 1px 1px 1px #ffffffd4, 
+                        inset -1px -1px 1px #0000003b;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Container adjustment for navigation */
+        .container {
+            max-width: 100%;
+            height: 100vh;
+            margin: 0 auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px;
+            }
+            
+            .nav-left {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .nav-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- <div class="header">
-            <h1>Database Query Interface</h1>
-            <p>Execute SQL queries on the interview sessions database</p>
-        </div> -->
+        <!-- Navigation Bar -->
+        <div id="navigation-container"></div>
 
         <div class="main-content">
             <!-- Query Panel -->
@@ -443,9 +516,15 @@ Example: SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;"
         }
 
         // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load navigation component
+            await loadNavigation({activePage: 'database', rightContent: 'userInfo'});
+            
             new DatabaseQuery();
         });
+
+        // Navigation functionality handled by component
     </script>
+    <script src="/components/nav-component.js"></script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv:*)",
+      "Bash(curl:*)",
+      "Bash(lsof:*)",
+      "Bash(python:*)",
+      "Bash(pkill:*)",
+      "Bash(fuser:*)",
+      "Bash(true)",
+      "Bash(rm:*)",
+      "Bash(timeout 5 uv run:*)",
+      "Bash(timeout:*)",
+      "Bash(grep:*)",
+      "Bash(echo:*)",
+      "WebFetch(domain:datalemur.com)",
+      "WebSearch",
+      "Bash(sqlite3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

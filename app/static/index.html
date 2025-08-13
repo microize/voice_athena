@@ -10,6 +10,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <!-- Note: For production, replace with compiled Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4a00',
+                        background: '#ececec',
+                        foreground: '#222',
+                        screen: '#f3f3f3'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
             --background: #ececec;
@@ -133,19 +149,20 @@
             transform: translateX(20px);
         }
 
+        /* Page specific styles only */
+
         /* Main Layout */
         .main-container {
             flex: 1;
             display: flex;
             width: 100%;
             margin: 0;
-            padding: 0 20px 20px 20px;
+            padding: 20px;
             gap: 24px;
-            height: calc(100vh - 32px);
+            height: calc(100vh - 120px);
             align-items: stretch;
         }
 
-        .left-panel,
         .chat-section,
         .debug-panel {
             display: flex;
@@ -460,94 +477,6 @@
             background: var(--primary);
         }
 
-        /* Left Panel */
-        .left-panel {
-            width: 280px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            /* background: var(--screen);
-            border-radius: var(--radius-lg); */
-            /* padding: 20px; */
-            /* box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8),
-                        inset -1px -1px 2px rgba(0,0,0,0.1); */
-        }
-
-        .left-panel-top {
-            display: flex;
-            /* margin-top: 16px; */
-            flex-direction: column;
-        }
-
-        .left-panel .description {
-            margin-top: 10px;
-        }
-
-        .left-panel .link {
-            margin-bottom: 16px;
-        }
-
-        /* Logo Info Panel */
-        .logo-info-panel {
-            background: var(--screen);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
-                        inset -1px -1px 2px rgba(0,0,0,0.1);
-        }
-
-        .logo-info-panel .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 400;
-            color: var(--foreground);
-            font-size: 16px;
-        }
-
-        .logo-info-panel .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .logo-info-panel .description {
-            color: rgba(34, 34, 34, 0.7);
-            line-height: 1.4;
-            font-size: 13px;
-        }
-
-        .info-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .debug-toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .debug-label {
-            font-size: 11px;
-            color: rgba(34, 34, 34, 0.7);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
 
 
         /* Debug Panel */
@@ -681,14 +610,26 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px;
+            }
+            
+            .nav-left {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .nav-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
             .main-container {
                 flex-direction: column;
                 padding: 0 16px;
-            }
-            
-            .left-panel {
-                width: 100%;
-                order: -1;
+                height: calc(100vh - 200px);
             }
             
             .debug-panel {
@@ -704,10 +645,6 @@
         @media (max-width: 1200px) {
             .main-container {
                 gap: 16px;
-            }
-            
-            .left-panel {
-                width: 280px;
             }
             
             .debug-panel {
@@ -850,40 +787,15 @@
             margin-bottom: 4px;
         }
 
-        /* Employee ID Panel */
-        .employee-id-panel {
-            background: var(--screen);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
-                        inset -1px -1px 2px rgba(0,0,0,0.1);
-        }
-
-        .employee-id-header {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--foreground);
-            margin-bottom: 8px;
-        }
-
+        /* Employee ID Panel in Navigation */
         .employee-id-form {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 12px;
         }
 
-        .employee-id-label {
-            font-size: 12px;
-            color: rgba(34, 34, 34, 0.7);
-            margin-bottom: 4px;
-        }
-
         .employee-id-input {
-            padding: 12px;
+            padding: 8px 12px;
             border: 1px solid rgba(0,0,0,0.1);
             border-radius: var(--radius-md);
             font-family: inherit;
@@ -891,6 +803,7 @@
             background: white;
             box-shadow: var(--shadow-textarea);
             transition: border-color 0.2s, box-shadow 0.2s;
+            width: 150px;
         }
 
         .employee-id-input:focus {
@@ -900,9 +813,9 @@
         }
 
         .employee-submit-btn {
-            font-size: 12px;
-            padding: 10px 16px;
-            height: 40px;
+            font-size: 11px;
+            padding: 8px 16px;
+            height: 32px;
         }
 
         .employee-submit-btn:disabled {
@@ -946,51 +859,14 @@
         .employee-status.error .employee-status-icon {
             background: #dc3545;
         }
+
     </style>
 </head>
 <body>
-    <div class="header">
-        <!-- Header is now empty but kept for spacing -->
-    </div>
+    <!-- Navigation Bar -->
+    <div id="navigation-container"></div>
     
     <div class="main-container">
-        <!-- Left Panel -->
-        <div class="left-panel">
-            <div class="left-panel-top">
-                <!-- Logo and Info Section -->
-                <div class="logo-info-panel">
-                    <div class="logo">
-                        <div class="logo-icon">A</div>
-                        <span>Athena</span>
-                    </div>
-                    <div class="description">
-                    Practice SQL technical interviews with an AI interviewer. Real-time voice conversation to test your database skills.
-                </div>
-                </div>
-                
-                <!-- Employee ID Section -->
-                <div class="employee-id-panel">
-                    <div class="employee-id-header">Employee Information</div>
-                    <div class="employee-id-form">
-                        <label for="employeeId" class="employee-id-label">Employee ID</label>
-                        <input type="text" id="employeeId" class="employee-id-input" placeholder="Enter your Employee ID" maxlength="10">
-                        <button id="submitEmployeeBtn" class="button primary employee-submit-btn" disabled>Submit</button>
-                    </div>
-                </div>
-                
-                
-                
-            </div>
-            
-            <!-- Debug Toggle at Bottom -->
-            <div class="debug-toggle-container">
-                <span class="debug-label">Debug Mode</span>
-                <label class="debug-switch">
-                    <input type="checkbox" id="debugToggle">
-                    <span class="debug-slider"></span>
-                </label>
-            </div>
-        </div>
 
         <!-- Chat Section -->
         <div class="chat-section">
@@ -1032,10 +908,10 @@
                 </div>
 
                 <div class="empty-state-subtext" style="font-size: 18px; color: #999; margin-bottom: 30px; line-height: 1.5;">
-                    Follow the steps below to start your interview:
+                    Click the Connect button below to start your SQL interview.
                 </div>
 
-                <!-- Step 1 -->
+                <!-- Instructions -->
                 <div style="
                     display: flex;
                     align-items: center;
@@ -1044,18 +920,7 @@
                     color: #666;
                     font-weight: bold;
                 ">
-                    Step 1: Enter your Employee ID in the left-side panel and click Submit.
-                </div>
-
-                <!-- Step 2 -->
-                <div style="
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 15px;
-                    font-size: 14px;
-                    color: #666;
-                    font-weight: bold;
-                "> Step 2: Click Connect at the bottom to start your SQL interview.
+                    Your interview will be tracked using your logged-in email address.
                 </div>
                 </div>
             </div>
@@ -1184,6 +1049,32 @@
                 closeHelpModal();
             }
         });
+
+        // Load user info and enable connect button
+        async function initializePage() {
+            try {
+                // Load navigation component with debug toggle for interview page
+                await loadNavigation({activePage: 'interview', rightContent: 'userInfoWithDebug'});
+                
+                // Enable connect button after navigation loads
+                document.getElementById('connectBtn').disabled = false;
+                
+                // Wait a bit for navigation to fully load, then setup debug listener
+                setTimeout(() => {
+                    if (window.realtimeDemo) {
+                        console.log('Setting up debug toggle from initialization');
+                        window.realtimeDemo.setupDebugToggleListener();
+                    }
+                }, 1000);
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Load user info when page loads
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
+    <script src="/components/nav-component.js"></script>
 </body>
 </html>
