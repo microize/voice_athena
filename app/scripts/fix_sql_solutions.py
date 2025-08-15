@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 def fix_sql_solutions():
-    conn = sqlite3.connect('interview_sessions.db')
+    conn = sqlite3.connect('../data/interview_sessions.db')
     cursor = conn.cursor()
     
     # Get all SQL problems

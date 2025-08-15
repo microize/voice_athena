@@ -7,7 +7,7 @@ import sqlite3
 import json
 
 def final_sql_schema_update():
-    conn = sqlite3.connect('interview_sessions.db')
+    conn = sqlite3.connect('../data/interview_sessions.db')
     cursor = conn.cursor()
     
     # Final batch of SQL problems with comprehensive schemas

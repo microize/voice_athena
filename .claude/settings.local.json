@@ -15,7 +15,12 @@
       "Bash(echo:*)",
       "WebFetch(domain:datalemur.com)",
       "WebSearch",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(git pull:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(find:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

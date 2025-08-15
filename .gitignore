@@ -1,3 +1,6 @@
+# Athena Voice Interview Platform .gitignore
+# Updated after project cleanup and reorganization
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,6 +130,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# UV specific
+.uv-cache/
 
 # Spyder project settings
 .spyderproject
@@ -300,10 +306,19 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-# Application specific
+# Application specific - Database files
 *.sqlite
-*.db
+# Keep the active database but ignore potential copies/backups
+app/data/*.db.backup
+app/data/*.db.old
+app/data/temp_*.db
+interview_sessions.db.backup
+voice_chat_sessions.db
+
+# Application logs
 *.log
+security.log
+security_events.db
 
 # API Keys and secrets
 .env
@@ -360,5 +375,25 @@ test-results/
 # Local development servers
 .dev-server/
 .local-server/
+
+# Cleanup - Folders that were removed/organized
+backups/
+logs/
+uploads/
+data/
+config/
+src/
+static/
+docs/
+venv/
+
+# Temporary files created during development
+test_*.py
+check_*.py
+temp_*.py
+cookies.txt
+
+# Claude Code specific
+.claude/
 
 app_similar/
