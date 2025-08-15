@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 def add_sql_problems():
-    conn = sqlite3.connect('interview_sessions.db')
+    conn = sqlite3.connect('../data/interview_sessions.db')
     cursor = conn.cursor()
     
     # SQL Practice Questions - Medium Difficulty

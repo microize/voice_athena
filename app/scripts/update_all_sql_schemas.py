@@ -7,7 +7,7 @@ import sqlite3
 import json
 
 def update_all_sql_problems():
-    conn = sqlite3.connect('interview_sessions.db')
+    conn = sqlite3.connect('../data/interview_sessions.db')
     cursor = conn.cursor()
     
     # Get all SQL problems

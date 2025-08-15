@@ -196,7 +196,7 @@ def require_auth(request: Request):
     return user
 
 # Database setup
-DB_PATH = "interview_sessions.db"
+DB_PATH = "data/interview_sessions.db"
 
 async def seed_sample_problems(db):
     """Seed the database with sample LeetCode-style problems"""
@@ -1010,7 +1010,7 @@ async def get_problem(problem_id: int, user: dict = Depends(require_auth)):
     try:
         async with aiosqlite.connect(DB_PATH) as db:
             cursor = await db.execute("""
-                SELECT id, title, description, examples, constraints, difficulty, category, tags, test_cases, solution_template, solutions
+                SELECT id, title, description, examples, constraints, difficulty, category, tags, test_cases, solution_template
                 FROM problems WHERE id = ?
             """, (problem_id,))
             result = await cursor.fetchone()
@@ -1028,8 +1028,7 @@ async def get_problem(problem_id: int, user: dict = Depends(require_auth)):
                 "category": result[6],
                 "tags": json.loads(result[7]) if result[7] else [],
                 "test_cases": json.loads(result[8]),
-                "solution_template": json.loads(result[9]) if result[9] else {},
-                "solutions": json.loads(result[10]) if result[10] else {}
+                "solution_template": json.loads(result[9]) if result[9] else {}
             }
             
             return problem
