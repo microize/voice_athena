@@ -20,7 +20,14 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(find:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git stash:*)",
+      "Bash(sed:*)",
+      "Bash(kill:*)",
+      "Bash(pip install:*)",
+      "Bash(source:*)",
+      "Bash(touch:*)",
+      "Bash(/dev/null)"
     ],
     "deny": [],
     "ask": []

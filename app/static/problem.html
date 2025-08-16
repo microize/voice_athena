@@ -9,7 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Note: For production, replace with compiled Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        // Suppress Tailwind production warning in development
+        if (typeof console !== "undefined" && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes("cdn.tailwindcss.com should not be used in production")) {
+                    return; // Suppress this specific warning
+                }
+                originalWarn.apply(console, args);
+            };
+        }
+    </script>
     <!-- Monaco Editor -->
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
     <script>
@@ -1564,20 +1576,21 @@ Example: [2,7,11,15]
         function renderTestCases() {
             const testCasesWrapper = document.querySelector('.test-cases-wrapper');
             
-            if (!currentProblem.test_cases || currentProblem.test_cases.length === 0) {
+            if (!currentProblem.test_cases || Object.keys(currentProblem.test_cases).length === 0) {
                 testCasesWrapper.innerHTML = '<div class="error">No test cases available</div>';
                 return;
             }
             
             let html = '';
-            currentProblem.test_cases.forEach((testCase, index) => {
+            const testCasesArray = Object.entries(currentProblem.test_cases);
+            testCasesArray.forEach(([key, testCase], index) => {
                 html += `
                     <div class="test-case-item">
                         <div class="test-case-label">Test Case ${index + 1}</div>
                         <div><strong>Input:</strong></div>
                         <div class="test-case-input">${escapeHtml(testCase.input || 'No input')}</div>
                         <div><strong>Expected Output:</strong></div>
-                        <div class="test-case-output">${escapeHtml(testCase.expected_output || 'No output')}</div>
+                        <div class="test-case-output">${escapeHtml(testCase.expected || 'No output')}</div>
                     </div>
                 `;
             });
@@ -1830,7 +1843,7 @@ Example: [2,7,11,15]
                     document.getElementById('outputContent').innerHTML = formatSqlResult(result);
                 } else {
                     // Use the first test case for running
-                    const testCase = currentProblem.test_cases[0];
+                    const testCase = Object.values(currentProblem.test_cases)[0];
                     const response = await fetch(`/api/problems/${problemId}/run`, {
                         method: 'POST',
                         headers: {
@@ -1990,7 +2003,7 @@ Example: [2,7,11,15]
                     const result = await response.json();
                     
                     // Add total test cases count to result
-                    result.total_test_cases = currentProblem.test_cases ? currentProblem.test_cases.length : result.test_cases_passed;
+                    result.total_test_cases = currentProblem.test_cases ? Object.keys(currentProblem.test_cases).length : result.test_cases_passed;
                     
                     document.getElementById('submissionContent').innerHTML = formatSubmissionSummary(result);
                 }
@@ -2716,6 +2729,6 @@ Example: [2,7,11,15]
             }
         }
     </script>
-    <script src="/components/nav-component.js"></script>
+    <script src="/static/components/nav-component.js"></script>
 </body>
 </html>

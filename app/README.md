@@ -1,136 +1,118 @@
-# Athena - SQL Technical Interview Assistant
+# Athena Interview Platform
 
-A real-time voice-based SQL technical interview application with comprehensive employee tracking and database analytics.
+🏗️ **Modular AI-Powered Coding Interview Platform**
 
-## Features
+## 🚀 Quick Start
 
-- **Voice-based SQL interviews** with real-time AI feedback
-- **Employee ID tracking** for session management
-- **Comprehensive database analytics** with web-based query interface
-- **Performance scoring** and detailed session reports
-- **Question categorization** by difficulty (intermediate/advanced) and topic
-- **SQLite database** with complete audit trail
-
-## Prerequisites
-
-- **OpenAI API Key**: You need a valid OpenAI API key with access to the Realtime API
-- **uv package manager**: Install from https://astral.sh/uv/install.ps1 (Windows) or https://astral.sh/uv/install.sh (Linux/Mac)
-
-## Installation
-
-1. Install uv if not already installed:
-   ```powershell
-   # Windows PowerShell
-   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-   ```
-
-2. Initialize the project and install dependencies:
-   ```bash
-   uv init
-   uv add fastapi uvicorn websockets openai-agents aiosqlite
-   ```
-
-## Setup
-
-1. Create a `.env` file in the `app/` directory and add your OpenAI API key:
-   ```bash
-   # Copy the example file
-   cp .env.example .env
-   ```
-   
-   Then edit `.env` and replace the placeholder with your actual API key:
-   ```
-   OPENAI_API_KEY=your-actual-openai-api-key-here
-   ```
-
-2. Verify your API key works:
-   ```bash
-   # Test with curl (replace with your actual key)
-   curl https://api.openai.com/v1/models \
-     -H "Authorization: Bearer your-actual-openai-api-key-here"
-   ```
-
-## Usage
-
-Start the application:
-
+### Run Application (Recommended)
 ```bash
-uv run python server.py
+python run_athena.py
+# or directly:
+uv run python -m athena.main
 ```
 
-The application provides two main interfaces:
-
-### **1. SQL Interview Interface**
-Access at: http://localhost:8000
-
-**Interview Flow:**
-1. Enter your **Employee ID** in the left panel and click **Submit**
-2. Click **Connect** to establish a realtime session (button enabled after Employee ID submission)
-3. Audio capture starts automatically - speak naturally to begin your SQL interview
-4. The AI interviewer will ask intermediate/advanced SQL questions
-5. Receive real-time feedback and scoring on your responses
-6. Complete 4-6 questions for a full session report
-7. Click **Disconnect** when done
-
-### **2. Database Query Interface**
-Access at: http://localhost:8000/database
-
-**Query Features:**
-- Execute SQL SELECT queries on the interview database
-- View session data, employee performance, and question analytics
-- Sample queries provided for common analysis tasks
-- Real-time results with sortable tables
-- Security-protected (read-only access)
-
-## Architecture
-
-### **Backend Components:**
-- **FastAPI server** with WebSocket connections for real-time communication
-- **SQL Interview Agent** with concise, technical interviewing behavior
-- **SQLite database** with comprehensive session tracking and employee management
-- **Function tools** for question logging, response evaluation, and report generation
-- **RESTful API** for database querying and analytics
-
-### **Frontend Components:**
-- **Interview Interface** (`static/index.html`) - Voice-based SQL interviews with employee ID tracking
-- **Database Interface** (`static/database.html`) - Web-based SQL query tool for data analysis
-- **Vanilla JavaScript** with WebSocket communication and responsive CSS
-
-### **Database Schema:**
-- `employees` - Employee records and metadata
-- `interview_sessions` - Session tracking with employee linking
-- `interview_questions` - Question categorization and difficulty tracking
-- `interview_responses` - Response evaluation with scoring and feedback
-- `session_reports` - Comprehensive performance reports
-
-### **Agent Behavior:**
-- **Concise responses** (under 2 sentences)
-- **Intermediate/Advanced focus** - No basic SQL questions
-- **Technical categories**: joins, subqueries, window_functions, CTEs, performance optimization
-- **Real-time evaluation** with 0.0-1.0 scoring scale
-
-## Sample Database Queries
-
-```sql
--- View recent interview sessions
-SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;
-
--- Employee performance summary  
-SELECT employee_id, COUNT(*) as sessions, AVG(overall_score) as avg_score
-FROM interview_sessions 
-WHERE employee_id IS NOT NULL 
-GROUP BY employee_id;
-
--- Question difficulty distribution
-SELECT category, difficulty, COUNT(*) as count
-FROM interview_questions 
-GROUP BY category, difficulty;
+### Legacy Support
+```bash
+python run_athena.py --legacy
 ```
 
-## Development Notes
+## 📁 Project Structure
 
-- **Python 3.12+** required
-- **OpenAI Realtime API** requires paid account with beta access
-- **HTTPS/localhost** required for browser microphone permissions
-- **Database auto-initialization** on first startup
-- **Employee ID tracking** maintains session history and analytics
+```
+athena/                       # Modular application structure
+├── main.py                   # Application entry point
+├── core/                     # Core application modules
+│   ├── app.py               # FastAPI application factory
+│   ├── config.py            # Configuration management
+│   ├── security.py          # Authentication & authorization
+│   ├── database.py          # Database operations
+│   ├── dependencies.py      # Dependency injection container
+│   ├── exceptions.py        # Custom exception hierarchy
+│   ├── middleware.py        # Error handling & logging middleware
+│   └── logging_config.py    # Logging configuration
+├── api/                     # API routes
+│   ├── __init__.py         # API router factory
+│   └── routes/             # Organized route modules
+│       ├── auth.py         # Authentication routes
+│       ├── problems.py     # Problem management routes
+│       ├── database.py     # Database query routes
+│       ├── interview.py    # Interview session routes
+│       ├── websockets.py   # WebSocket routes
+│       └── pages.py        # Static page routes
+├── services/               # Business logic layer
+│   ├── problem_service.py  # Problem database operations
+│   ├── user_service.py     # User management operations
+│   └── interview_service.py # Interview session operations
+├── models/                 # Data models and schemas
+│   └── schemas.py         # Pydantic data models
+└── utils/                 # Utility functions
+    └── __init__.py
+```
+
+## ✨ Key Features
+
+### 🏗️ Modular Architecture
+- **Clean separation of concerns** following Python best practices
+- **Dependency injection** for testable and maintainable code
+- **Service layer pattern** for business logic separation
+- **Comprehensive error handling** with custom exception hierarchy
+
+### 🔒 Security & Authentication
+- **Multi-method authentication** (cookies, Bearer tokens, Basic auth)
+- **Session management** with expiration and cleanup
+- **Security middleware** with proper headers and validation
+- **Password hashing** with salt for secure storage
+
+### 📊 Observability
+- **Structured logging** with file rotation and levels
+- **Request tracking** with unique request IDs
+- **Error monitoring** with contextual information
+- **Performance metrics** and duration tracking
+
+### 🔧 Configuration Management
+- **Environment-based configuration** with validation
+- **Type-safe settings** with defaults and validation
+- **Centralized configuration** for easy maintenance
+
+## 🛠️ Development
+
+### Adding New Features
+1. **API Routes**: Add to `athena/api/routes/`
+2. **Business Logic**: Add to `athena/services/`
+3. **Data Models**: Update `athena/models/schemas.py`
+4. **Configuration**: Update `athena/core/config.py`
+
+### Testing
+The modular structure makes testing easy with dependency injection:
+```python
+from athena.core.dependencies import get_problem_service
+# Services are easily mockable for unit tests
+```
+
+## 📚 Documentation
+
+- **Setup Guide**: [`docs/SETUP_CODING_PLATFORM.md`](docs/SETUP_CODING_PLATFORM.md)
+- **Architecture**: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- **Interview Fixes**: [`docs/INTERVIEW_FIXES.md`](docs/INTERVIEW_FIXES.md)
+
+## 🔧 Utilities
+
+- **Database Scripts**: `scripts/` - Utility scripts for database management
+- **Application Runner**: `run_athena.py` - Unified application launcher
+- **Legacy Backup**: `server.py.backup` - Original monolithic version
+
+## 🎯 Access Points
+
+- **Main Application**: http://localhost:8003/
+- **Login Page**: http://localhost:8003/login
+- **Problems List**: http://localhost:8003/problems
+- **Database Interface**: http://localhost:8003/database
+
+## 🔑 Default Credentials
+
+- `admin` / `password123`
+- `demo` / `demo123`
+
+---
+
+Built with ❤️ using FastAPI, SQLite, and modern Python best practices.
