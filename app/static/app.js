@@ -227,11 +227,22 @@ class RealtimeDemo {
             
             this.ws.onmessage = (event) => {
                 console.log('WebSocket message received:', event.data);
-                try {
-                    const data = JSON.parse(event.data);
-                    this.handleRealtimeEvent(data);
-                } catch (error) {
-                    console.error('Error parsing WebSocket message:', error);
+                
+                // Handle different types of WebSocket messages
+                if (event.data instanceof Blob) {
+                    // Binary audio data received
+                    console.log('Received binary audio data, size:', event.data.size);
+                    this.handleAudioData(event.data);
+                } else if (typeof event.data === 'string') {
+                    // Text/JSON message received
+                    try {
+                        const data = JSON.parse(event.data);
+                        this.handleRealtimeEvent(data);
+                    } catch (error) {
+                        console.error('Error parsing WebSocket JSON message:', error);
+                    }
+                } else {
+                    console.warn('Unknown WebSocket message type:', typeof event.data);
                 }
             };
             
@@ -369,28 +380,36 @@ class RealtimeDemo {
             });
             
             const source = this.captureAudioContext.createMediaStreamSource(this.stream);
-            this.processor = this.captureAudioContext.createScriptProcessor(4096, 1, 1);
             
-            this.processor.onaudioprocess = (event) => {
-                if (!this.isMuted && this.isConnected) {
-                    const inputData = event.inputBuffer.getChannelData(0);
-                    const int16Data = new Int16Array(inputData.length);
+            // Try to use AudioWorkletNode if supported, fallback to ScriptProcessorNode
+            if (this.captureAudioContext.audioWorklet) {
+                try {
+                    await this.captureAudioContext.audioWorklet.addModule('/static/audio-processor-worklet.js');
+                    this.processor = new AudioWorkletNode(this.captureAudioContext, 'audio-capture-processor');
                     
-                    for (let i = 0; i < inputData.length; i++) {
-                        int16Data[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
-                    }
+                    this.processor.port.onmessage = (event) => {
+                        if (event.data.type === 'audio-data' && !this.isMuted && this.isConnected) {
+                            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                                this.ws.send(JSON.stringify({
+                                    type: 'audio',
+                                    data: Array.from(event.data.data)
+                                }));
+                            }
+                        }
+                    };
                     
-                    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                        this.ws.send(JSON.stringify({
-                            type: 'audio',
-                            data: Array.from(int16Data)
-                        }));
-                    }
+                    source.connect(this.processor);
+                    this.processor.connect(this.captureAudioContext.destination);
+                    console.log('Using AudioWorkletNode for audio processing');
+                } catch (workletError) {
+                    console.warn('AudioWorklet failed, falling back to ScriptProcessor:', workletError);
+                    this.setupScriptProcessor(source);
                 }
-            };
+            } else {
+                console.warn('AudioWorklet not supported, using ScriptProcessor');
+                this.setupScriptProcessor(source);
+            }
             
-            source.connect(this.processor);
-            this.processor.connect(this.captureAudioContext.destination);
             this.isCapturing = true;
             this.updateUI();
             
@@ -400,6 +419,33 @@ class RealtimeDemo {
             // If audio fails, disconnect the WebSocket
             this.disconnect();
         }
+    }
+    
+    setupScriptProcessor(source) {
+        // Fallback to deprecated ScriptProcessorNode for older browsers
+        this.processor = this.captureAudioContext.createScriptProcessor(4096, 1, 1);
+        
+        this.processor.onaudioprocess = (event) => {
+            if (!this.isMuted && this.isConnected) {
+                const inputData = event.inputBuffer.getChannelData(0);
+                const int16Data = new Int16Array(inputData.length);
+                
+                for (let i = 0; i < inputData.length; i++) {
+                    int16Data[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+                }
+                
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.send(JSON.stringify({
+                        type: 'audio',
+                        data: Array.from(int16Data)
+                    }));
+                }
+            }
+        };
+        
+        source.connect(this.processor);
+        this.processor.connect(this.captureAudioContext.destination);
+        console.log('Using deprecated ScriptProcessorNode for audio processing');
     }
     
     stopAudioCapture() {
@@ -440,7 +486,12 @@ class RealtimeDemo {
         switch (event.type) {
             case 'history_updated':
                 console.log('Handling history update:', event.history); // Debug log
-                this.updateMessagesFromHistory(event.history);
+                // Check if history exists and is valid
+                if (event.history && Array.isArray(event.history)) {
+                    this.updateMessagesFromHistory(event.history);
+                } else {
+                    console.log('History update received but history is empty or invalid');
+                }
                 break;
             case 'audio':
                 console.log('Handling audio data - length:', event.audio?.length || 0); // Debug log
@@ -468,6 +519,29 @@ class RealtimeDemo {
             default:
                 console.log('Unhandled event type:', event.type); // Debug log
         }
+    }
+    
+    handleAudioData(audioBlob) {
+        // Handle binary audio data received from WebSocket
+        console.log('Processing audio blob, size:', audioBlob.size);
+        
+        // For now, we'll just log that we received audio data
+        // In a real implementation, this would convert the blob to audio and play it
+        // or process it for speech recognition, etc.
+        
+        if (this.debugMode) {
+            this.addRawEvent({
+                type: 'audio_blob',
+                size: audioBlob.size,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        // Optional: Convert blob to ArrayBuffer for audio processing
+        // audioBlob.arrayBuffer().then(buffer => {
+        //     // Process audio buffer here
+        //     console.log('Audio buffer ready:', buffer.byteLength, 'bytes');
+        // });
     }
     
     updateMessagesFromHistory(history) {

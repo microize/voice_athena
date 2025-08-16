@@ -50,7 +50,7 @@ window.NavComponent = {
         return new Promise((resolve, reject) => {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = '/components/nav-component.css';
+            link.href = '/static/components/nav-component.css';
             link.onload = resolve;
             link.onerror = reject;
             document.head.appendChild(link);
@@ -66,7 +66,7 @@ window.NavComponent = {
             throw new Error(`Container with id '${containerId}' not found`);
         }
 
-        const response = await fetch('/components/nav-component.html');
+        const response = await fetch('/static/components/nav-component.html');
         if (!response.ok) {
             throw new Error(`Failed to load navigation HTML: ${response.statusText}`);
         }

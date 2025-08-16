@@ -9,7 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Note: For production, replace with compiled Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        // Suppress Tailwind production warning in development
+        if (typeof console !== "undefined" && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes("cdn.tailwindcss.com should not be used in production")) {
+                    return; // Suppress this specific warning
+                }
+                originalWarn.apply(console, args);
+            };
+        }
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -484,6 +496,6 @@
             await loadProblems();
         });
     </script>
-    <script src="/components/nav-component.js"></script>
+    <script src="/static/components/nav-component.js"></script>
 </body>
 </html>

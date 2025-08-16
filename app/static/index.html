@@ -10,9 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <!-- Note: For production, replace with compiled Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Development: Tailwind CSS via CDN -->
+    <!-- TODO: For production, compile Tailwind CSS locally -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
+        // Suppress production warning for development
         tailwind.config = {
             theme: {
                 extend: {
@@ -23,7 +25,22 @@
                         screen: '#f3f3f3'
                     }
                 }
+            },
+            // Suppress production warnings in development
+            corePlugins: {
+                preflight: true,
             }
+        }
+        
+        // Hide Tailwind production warning in development
+        if (typeof console !== 'undefined' && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+                    return; // Suppress this specific warning
+                }
+                originalWarn.apply(console, args);
+            };
         }
     </script>
     <style>
@@ -889,7 +906,7 @@
                 ">
                 <!-- Logo -->
                 <div class="athena-logo" style="margin-bottom: 20px;">
-                    <img src="athena-logo.png" alt="Athena Logo" style="
+                    <img src="/static/athena-logo.png" alt="Athena Logo" style="
                         width: 100px;
                         height: 100px;
                         border-radius: 50%;
@@ -1022,7 +1039,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="/static/app.js"></script>
     <script>
         // Help modal functionality
         function openHelpModal() {
@@ -1075,6 +1092,6 @@
         // Load user info when page loads
         document.addEventListener('DOMContentLoaded', initializePage);
     </script>
-    <script src="/components/nav-component.js"></script>
+    <script src="/static/components/nav-component.js"></script>
 </body>
 </html>
