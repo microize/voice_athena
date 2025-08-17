@@ -135,20 +135,49 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         return response
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """Middleware for adding security headers"""
+    """Middleware for adding comprehensive security headers"""
     
     async def dispatch(self, request: Request, call_next):
         """Add security headers to response"""
         response = await call_next(request)
         
-        # Add security headers
+        # Essential security headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         
-        # Add HSTS header for HTTPS
+        # Content Security Policy
+        csp_policy = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "img-src 'self' data: https:; "
+            "connect-src 'self' wss: ws:; "
+            "media-src 'self'; "
+            "object-src 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'; "
+            "frame-ancestors 'none';"
+        )
+        response.headers["Content-Security-Policy"] = csp_policy
+        
+        # Prevent MIME sniffing
+        response.headers["X-Download-Options"] = "noopen"
+        
+        # HSTS (for HTTPS environments)
         if request.url.scheme == "https":
-            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        
+        # Permissions Policy (Feature Policy replacement)
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(self), geolocation=(), payment=(), usb=(), "
+            "accelerometer=(), gyroscope=(), magnetometer=(), fullscreen=(self)"
+        )
+        
+        # Remove server identification (use del instead of pop for MutableHeaders)
+        if "server" in response.headers:
+            del response.headers["server"]
         
         return response

@@ -27,7 +27,15 @@
       "Bash(pip install:*)",
       "Bash(source:*)",
       "Bash(touch:*)",
-      "Bash(/dev/null)"
+      "Bash(/dev/null)",
+      "Bash(git fetch:*)",
+      "Bash(for:*)",
+      "Bash(done)",
+      "Bash(__NEW_LINE__ echo \"dashboard.html:\")",
+      "Bash(__NEW_LINE__ echo \"problem.html:\")",
+      "Bash(__NEW_LINE__ echo \"problems.html:\")",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(wget:*)"
     ],
     "deny": [],
     "ask": []

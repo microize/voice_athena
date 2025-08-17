@@ -62,6 +62,12 @@ async def get_user_sessions(
         logger.error(f"Error fetching user sessions: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch user sessions")
 
+@router.get("/interviews/upcoming")
+async def get_upcoming_interviews(user: dict = Depends(require_auth)):
+    """Get upcoming interviews for dashboard"""
+    # Return empty list for now - placeholder for future implementation
+    return []
+
 @router.get("/sessions/{session_id}")
 async def get_session_details(
     session_id: str, 
