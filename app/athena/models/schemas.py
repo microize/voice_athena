@@ -135,16 +135,54 @@ class Submission(BaseModel):
 class ValidatedQueryRequest(QueryRequest):
     @validator('query')
     def validate_sql_query(cls, v):
-        # Basic SQL validation - only allow SELECT, WITH, PRAGMA
-        v_upper = v.upper().strip()
-        allowed_starts = ('SELECT', 'WITH', 'PRAGMA')
+        import re
         
+        # Enhanced SQL validation with comprehensive security checks
+        v_clean = v.strip()
+        v_upper = v_clean.upper()
+        
+        # Check length
+        if len(v_clean) > 5000:
+            raise ValueError('Query too long. Maximum 5000 characters allowed.')
+        
+        # Only allow SELECT, WITH, PRAGMA
+        allowed_starts = ('SELECT', 'WITH', 'PRAGMA')
         if not any(v_upper.startswith(start) for start in allowed_starts):
             raise ValueError('Only SELECT, WITH, and PRAGMA statements are allowed')
         
-        # Block dangerous operations
-        dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'CREATE', 'ALTER', 'TRUNCATE']
-        if any(keyword in v_upper for keyword in dangerous_keywords):
-            raise ValueError('Dangerous SQL operations are not allowed')
+        # Block dangerous operations (comprehensive list)
+        dangerous_keywords = [
+            'DROP', 'DELETE', 'INSERT', 'UPDATE', 'CREATE', 'ALTER', 'TRUNCATE',
+            'EXEC', 'EXECUTE', 'CALL', 'IMPORT', 'LOAD_EXTENSION', 'ATTACH',
+            'DETACH', 'VACUUM', 'REINDEX', 'ANALYZE', 'EXPLAIN QUERY PLAN',
+            'PRAGMA writable_schema', 'PRAGMA user_version', 'PRAGMA temp_store'
+        ]
         
-        return v
+        for keyword in dangerous_keywords:
+            if keyword in v_upper:
+                raise ValueError(f'Operation "{keyword}" is not allowed for security reasons')
+        
+        # Block SQL injection patterns
+        injection_patterns = [
+            r';\s*(DROP|DELETE|INSERT|UPDATE|CREATE|ALTER|TRUNCATE)',
+            r'--\s*',  # SQL comments
+            r'/\*.*?\*/',  # Multi-line comments
+            r'\bUNION\s+SELECT\b',  # Union-based injection
+            r'\bOR\s+1\s*=\s*1\b',  # Always true conditions
+            r'\bAND\s+1\s*=\s*1\b',
+            r'\\x[0-9a-fA-F]+',  # Hex encoding
+            r'CHAR\s*\(',  # Character function abuse
+            r'ASCII\s*\(',
+            r'SUBSTRING\s*\(',
+            r'LOAD_EXTENSION\s*\(',
+        ]
+        
+        for pattern in injection_patterns:
+            if re.search(pattern, v_upper, re.IGNORECASE):
+                raise ValueError('Query contains potentially dangerous patterns')
+        
+        # Ensure only read operations
+        if re.search(r'\b(INTO|OUTFILE|DUMPFILE)\b', v_upper):
+            raise ValueError('File operations are not allowed')
+        
+        return v_clean

@@ -8,6 +8,32 @@ from athena.core.security import require_auth
 router = APIRouter(prefix="/api", tags=["user"])
 logger = logging.getLogger(__name__)
 
+@router.get("/user/me")
+async def get_current_user_info(user: dict = Depends(require_auth)):
+    """Get current user information"""
+    return {
+        "username": user["username"],
+        "session_token": user.get("session_token"),
+        "authenticated": True
+    }
+
+@router.get("/user/statistics")
+async def get_user_statistics(user: dict = Depends(require_auth)):
+    """Get user statistics for dashboard"""
+    # Return placeholder data for now
+    return {
+        "problemsSolved": 0,
+        "interviewsCompleted": 0,
+        "successRate": 0,
+        "averageTime": 0
+    }
+
+@router.get("/user/activity")
+async def get_user_activity(user: dict = Depends(require_auth)):
+    """Get user recent activity"""
+    # Return empty activity for now
+    return []
+
 @router.get("/user/progress")
 async def get_user_progress(user: dict = Depends(require_auth)):
     """Get user's coding progress statistics"""

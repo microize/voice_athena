@@ -12,7 +12,7 @@ def create_svg_favicon():
     svg_content = '''<?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <!-- Orange background circle -->
-    <circle cx="16" cy="16" r="16" fill="#ff4a00"/>
+    <circle cx="16" cy="16" r="16" fill="#2a6ed1"/>
     
     <!-- Letter A in white -->
     <text x="16" y="22" 
@@ -42,7 +42,7 @@ def create_simple_html_favicon():
 <body>
     <h1>Athena Favicon Preview</h1>
     <p>Check the browser tab for the orange "A" favicon!</p>
-    <div style="font-size: 64px; color: #ff4a00;">🅰️</div>
+    <div style="font-size: 64px; color: #2a6ed1;">🅰️</div>
 </body>
 </html>'''
     

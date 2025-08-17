@@ -24,8 +24,14 @@ class Settings:
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     
     # Security Configuration
-    SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY", "default-secret-key-change-in-production")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+    SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY", os.urandom(32).hex())
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15"))
+    MAX_LOGIN_ATTEMPTS: int = int(os.getenv("MAX_LOGIN_ATTEMPTS", "5"))
+    LOGIN_ATTEMPT_WINDOW: int = int(os.getenv("LOGIN_ATTEMPT_WINDOW", "900"))  # 15 minutes
+    
+    # Rate Limiting Configuration
+    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+    RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "3600"))  # 1 hour
     
     # Logging Configuration
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
@@ -43,10 +49,10 @@ class Settings:
         "ruby": 72         # Ruby 2.7.0
     }
     
-    # Default Users (in production, use proper database)
+    # Default Users - ONLY for development. Use strong passwords!
     DEFAULT_USERS: Dict[str, str] = {
-        "admin": "password123",
-        "demo": "demo123"
+        "admin": os.getenv("ADMIN_PASSWORD", "Admin123!@#SecureP@ss"),
+        "demo": os.getenv("DEMO_PASSWORD", "Demo456!@#SecureP@ss")
     }
     
     @classmethod

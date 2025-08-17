@@ -1,5 +1,6 @@
 """FastAPI application factory"""
 import logging
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,13 +54,17 @@ def create_app() -> FastAPI:
     app.add_middleware(RequestLoggingMiddleware)
     app.add_middleware(ErrorHandlingMiddleware)
     
-    # Add CORS middleware
+    # Add CORS middleware with secure configuration
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8003,http://127.0.0.1:8003").split(",")
+    
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Configure properly for production
+        allow_origins=allowed_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "User-Agent"],
+        expose_headers=["Content-Type", "Authorization"],
+        max_age=3600,  # Cache preflight requests for 1 hour
     )
     
     # Include API routes

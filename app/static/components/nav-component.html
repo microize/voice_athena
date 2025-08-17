@@ -1,18 +1,36 @@
-<!-- Navigation Bar Component -->
-<nav class="nav-container">
-    <div class="nav-left">
-        <div class="nav-logo">
-            <div class="nav-logo-icon">A</div>
+<!-- Navigation Sidebar Component -->
+<nav class="nav-sidebar">
+    <div class="nav-logo-card">
+        <div class="nav-logo" onclick="toggleSidebar()">
+            <img src="/static/athena-logo.png" alt="Athena Logo" class="nav-logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="nav-logo-icon" style="display: none;">A</div>
             <span>Athena</span>
         </div>
+    </div>
+    
+    <div class="nav-links-card">
         <div class="nav-links">
-            <a href="/" class="nav-link" data-page="interview">Interview</a>
-            <a href="/database" class="nav-link" data-page="database">Database</a>
-            <a href="/problems" class="nav-link" data-page="problems">Problems</a>
+            <a href="/dashboard" class="nav-link" data-page="dashboard">
+                <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/interview" class="nav-link" data-page="interview">
+                <i data-lucide="mic" class="nav-icon"></i>
+                <span>Interview</span>
+            </a>
+            <a href="/database" class="nav-link" data-page="database">
+                <i data-lucide="database" class="nav-icon"></i>
+                <span>Database</span>
+            </a>
+            <a href="/problems" class="nav-link" data-page="problems">
+                <i data-lucide="code-2" class="nav-icon"></i>
+                <span>Problems</span>
+            </a>
         </div>
     </div>
-    <div class="nav-right" id="navRightContent">
-        <!-- Right content will be dynamically inserted here -->
+    
+    <div class="nav-user-card" id="navBottomContent">
+        <!-- Bottom content will be dynamically inserted here -->
         <div class="user-info">
             <span id="userName">Loading...</span>
         </div>

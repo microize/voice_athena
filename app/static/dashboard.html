@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Athena Interview Platform</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='16' cy='16' r='16' fill='%232a6ed1'/%3e%3ctext x='16' y='22' text-anchor='middle' font-family='Arial, sans-serif' font-size='20' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts imported via global.css -->
+    
+    <!-- Lucide Icons (Local) -->
+    <script src="/static/js/lucide.js"></script>
+
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="/static/styles/global.css">
+    <link rel="stylesheet" href="/static/styles/buttons.css">
+    <link rel="stylesheet" href="/static/styles/dashboard.css">
+    <link rel="stylesheet" href="/static/components/nav-component.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <div id="navigation-container"></div>
+
+        <div class="main-content">
+            <!-- Welcome Card with Chat -->
+            <div class="welcome-card">
+                <div class="welcome-header">
+                    <div class="welcome-user-section">
+                        <div class="welcome-avatar">
+                            <i data-lucide="user" class="avatar-icon"></i>
+                        </div>
+                        <div class="welcome-text">
+                            <h1 class="welcome-title">Hi, <span id="welcomeUserName">User</span>!</h1>
+                            <div class="athena-speech-bubble">
+                                <div class="speech-content">How can I help you today?</div>
+                                <div class="speech-arrow"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="athena-avatar">
+                        <i data-lucide="bot" class="athena-icon"></i>
+                        <span class="athena-name">Athena</span>
+                    </div>
+                </div>
+                
+                <div class="welcome-chat">
+                    <div class="chat-input-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" 
+                               id="chatInput" 
+                               class="chat-input" 
+                               placeholder="Search or ask anything..."
+                               maxlength="500">
+                        <button id="chatSendBtn" class="chat-send-btn" disabled>
+                            <i data-lucide="arrow-right" class="send-icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-section">
+                <h2 class="section-title">Your Progress</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="trophy" class="icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="interviewCount">0</div>
+                            <div class="stat-label">Interviews Completed</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%" id="interviewProgress"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="target" class="icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="averageScore">--</div>
+                            <div class="stat-label">Average Score</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%" id="scoreProgress"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="clock" class="icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="timeSpent">0h</div>
+                            <div class="stat-label">Time Practiced</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%" id="timeProgress"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h2 class="section-title">Recent Activity</h2>
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i data-lucide="mic" class="icon"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Welcome to Athena Platform</div>
+                            <div class="activity-description">Ready to start your SQL interview journey</div>
+                        </div>
+                        <div class="activity-time">now</div>
+                    </div>
+                    
+                    <div class="activity-item upcoming">
+                        <div class="activity-icon">
+                            <i data-lucide="calendar" class="icon"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Start Your First Interview</div>
+                            <div class="activity-description">Click "Voice Interview" to begin</div>
+                        </div>
+                        <div class="activity-time">upcoming</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modular JavaScript -->
+    <script src="/static/components/nav-component.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadNavigation({activePage: 'dashboard', rightContent: 'userInfo'});
+            
+            // Load user info for welcome card
+            await loadWelcomeUserInfo();
+            
+            // Setup chat input functionality
+            setupChatInput();
+        });
+
+        // Load user info for welcome card
+        async function loadWelcomeUserInfo() {
+            try {
+                const response = await fetch('/api/user/me');
+                if (response.ok) {
+                    const data = await response.json();
+                    const welcomeUserName = document.getElementById('welcomeUserName');
+                    if (welcomeUserName && data.authenticated) {
+                        welcomeUserName.textContent = data.username || 'User';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading welcome user info:', error);
+            }
+        }
+
+        // Setup chat input functionality
+        function setupChatInput() {
+            const chatInput = document.getElementById('chatInput');
+            const chatSendBtn = document.getElementById('chatSendBtn');
+
+            if (chatInput && chatSendBtn) {
+                // Enable/disable send button based on input
+                chatInput.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    chatSendBtn.disabled = value.length === 0;
+                });
+
+                // Handle send button click
+                chatSendBtn.addEventListener('click', function() {
+                    const message = chatInput.value.trim();
+                    if (message) {
+                        handleChatMessage(message);
+                        chatInput.value = '';
+                        chatSendBtn.disabled = true;
+                    }
+                });
+
+                // Handle Enter key
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (!chatSendBtn.disabled) {
+                            chatSendBtn.click();
+                        }
+                    }
+                });
+            }
+        }
+
+        // Handle chat message
+        function handleChatMessage(message) {
+            console.log('Chat message:', message);
+            // TODO: Implement chat functionality
+            // This could connect to an AI assistant or help system
+        }
+    </script>
+</body>
+</html>
