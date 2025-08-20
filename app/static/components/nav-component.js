@@ -1,6 +1,6 @@
 /**
  * Navigation Component Loader
- * Creates a reusable navigation component system for Athena voice interview application
+ * Creates a reusable navigation component system for Golden voice interview application
  */
 
 // Global navigation component functions
