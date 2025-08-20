@@ -390,7 +390,8 @@ function toggleSidebar() {
  * Initialize sidebar state from localStorage
  */
 function initializeSidebarState() {
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    // Default to collapsed if no preference is stored
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
     if (isCollapsed) {
         const sidebar = document.querySelector('.nav-sidebar');
         const container = document.querySelector('.container');

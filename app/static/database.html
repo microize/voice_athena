@@ -8,7 +8,10 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='90' cy='90' r='90' fill='%232a6ed1'/%3e%3ctext x='90' y='120' text-anchor='middle' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
     
-    <!-- Fonts imported via global.css -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons (Local) -->
     <script src="/static/js/lucide.js"></script>
@@ -25,84 +28,176 @@
         <div id="navigation-container"></div>
 
         <div class="main-content">
-            <!-- Query Panel -->
-            <div class="query-panel">
-                <div class="panel-header">📝 SQL Query Editor</div>
+            <!-- Database Schema Sidebar -->
+            <div class="schema-sidebar">
+                <div class="panel-header">Database Schema</div>
                 
-                <textarea 
-                    id="queryEditor" 
-                    class="query-editor" 
-                    placeholder="Enter your SQL query here... (Ctrl+Enter to execute)
+                <div class="schema-section">
+                    <div class="table-item">
+                        <div class="table-header" onclick="toggleTableSchema('employees')">
+                            <span class="table-name">employees</span>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="table-columns" id="employees-schema">
+                            <div class="column-item">
+                                <span class="column-name">id</span>
+                                <span class="column-type">INTEGER PRIMARY KEY</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">employee_id</span>
+                                <span class="column-type">TEXT UNIQUE</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">name</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">department</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">role</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-item">
+                        <div class="table-header" onclick="toggleTableSchema('interview_sessions')">
+                            <span class="table-name">interview_sessions</span>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="table-columns" id="interview_sessions-schema">
+                            <div class="column-item">
+                                <span class="column-name">id</span>
+                                <span class="column-type">INTEGER PRIMARY KEY</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">session_id</span>
+                                <span class="column-type">TEXT UNIQUE</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">employee_id</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">start_time</span>
+                                <span class="column-type">TIMESTAMP</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">end_time</span>
+                                <span class="column-type">TIMESTAMP</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">status</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">overall_score</span>
+                                <span class="column-type">REAL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-item">
+                        <div class="table-header" onclick="toggleTableSchema('interview_questions')">
+                            <span class="table-name">interview_questions</span>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="table-columns" id="interview_questions-schema">
+                            <div class="column-item">
+                                <span class="column-name">id</span>
+                                <span class="column-type">INTEGER PRIMARY KEY</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">session_id</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">question_text</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">category</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">difficulty</span>
+                                <span class="column-type">TEXT</span>
+                            </div>
+                            <div class="column-item">
+                                <span class="column-name">score</span>
+                                <span class="column-type">REAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Queries -->
+                <div class="sample-queries">
+                    <div class="panel-header">Sample Queries</div>
+                    
+                    <div class="sample-query" data-query="SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;">
+                        <div class="sample-query-title">Recent Interview Sessions</div>
+                    </div>
+                    
+                    <div class="sample-query" data-query="SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id ORDER BY avg_score DESC;">
+                        <div class="sample-query-title">Employee Performance Summary</div>
+                    </div>
+                    
+                    <div class="sample-query" data-query="SELECT category, difficulty, COUNT(*) as question_count, AVG(score) as avg_score FROM interview_questions WHERE score IS NOT NULL GROUP BY category, difficulty ORDER BY category, difficulty;">
+                        <div class="sample-query-title">Question Performance by Category</div>
+                    </div>
+                    
+                    <div class="sample-query" data-query="SELECT DATE(start_time) as interview_date, COUNT(*) as sessions_count, COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count FROM interview_sessions GROUP BY DATE(start_time) ORDER BY interview_date DESC LIMIT 14;">
+                        <div class="sample-query-title">Daily Interview Activity</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Query and Results Area -->
+            <div class="query-results-area">
+                <!-- Query Panel -->
+                <div class="query-panel">
+                    <div class="panel-header">SQL Query Editor</div>
+                    
+                    <textarea 
+                        id="queryEditor" 
+                        class="query-editor" 
+                        placeholder="Enter your SQL query here... (Ctrl+Enter to execute)
 
 Example:
 SELECT * FROM interview_sessions 
 ORDER BY start_time DESC 
 LIMIT 10;"
-                ></textarea>
-                
-                <div class="query-controls">
-                    <button id="executeBtn" class="button primary">Execute Query</button>
-                    <button id="clearBtn" class="button secondary">Clear</button>
-                    <div class="query-info">Press Ctrl+Enter to execute</div>
+                    ></textarea>
+                    
+                    <div class="query-controls">
+                        <button id="executeBtn" class="button primary">
+                            <i data-lucide="play" class="button-icon"></i>
+                            Execute Query
+                        </button>
+                        <button id="clearBtn" class="button secondary">
+                            <i data-lucide="x" class="button-icon"></i>
+                            Clear
+                        </button>
+                        <div class="query-info">Press Ctrl+Enter to execute</div>
+                    </div>
+
+                    <div id="statusBar" class="status-bar"></div>
                 </div>
 
-                <div id="statusBar" class="status-bar"></div>
-
-                <!-- Sample Queries -->
-                <div class="sample-queries">
-                    <div class="panel-header">💡 Sample Queries</div>
-                    
-                    <div class="sample-query" data-query="SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;">
-                        <div class="sample-query-title">Recent Interview Sessions</div>
-                        <div class="sample-query-sql">SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;</div>
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div class="results-header">
+                        <div class="panel-header">Query Results</div>
+                        <div class="results-meta" id="resultsMeta"></div>
                     </div>
                     
-                    <div class="sample-query" data-query="SELECT 
-    employee_id, 
-    COUNT(*) as session_count,
-    AVG(overall_score) as avg_score
-FROM interview_sessions 
-WHERE overall_score IS NOT NULL 
-GROUP BY employee_id 
-ORDER BY avg_score DESC;">
-                        <div class="sample-query-title">Employee Performance Summary</div>
-                        <div class="sample-query-sql">SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id ORDER BY avg_score DESC;</div>
-                    </div>
-                    
-                    <div class="sample-query" data-query="SELECT 
-    category,
-    difficulty,
-    COUNT(*) as question_count,
-    AVG(score) as avg_score
-FROM interview_questions 
-WHERE score IS NOT NULL 
-GROUP BY category, difficulty 
-ORDER BY category, difficulty;">
-                        <div class="sample-query-title">Question Performance by Category</div>
-                        <div class="sample-query-sql">SELECT category, difficulty, COUNT(*) as question_count, AVG(score) as avg_score FROM interview_questions WHERE score IS NOT NULL GROUP BY category, difficulty ORDER BY category, difficulty;</div>
-                    </div>
-                    
-                    <div class="sample-query" data-query="SELECT 
-    DATE(start_time) as interview_date,
-    COUNT(*) as sessions_count,
-    COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count
-FROM interview_sessions 
-GROUP BY DATE(start_time) 
-ORDER BY interview_date DESC 
-LIMIT 14;">
-                        <div class="sample-query-title">Daily Interview Activity</div>
-                        <div class="sample-query-sql">SELECT DATE(start_time) as interview_date, COUNT(*) as sessions_count, COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count FROM interview_sessions GROUP BY DATE(start_time) ORDER BY interview_date DESC LIMIT 14;</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Panel -->
-            <div class="results-panel">
-                <div class="panel-header">📊 Query Results</div>
-                
-                <div class="results-container">
-                    <div id="resultsContent" class="no-results">
-                        Execute a query to see results here
+                    <div class="results-container">
+                        <div id="resultsContent" class="no-results">
+                            Execute a query to see results here
+                        </div>
                     </div>
                 </div>
             </div>

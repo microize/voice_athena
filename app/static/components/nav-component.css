@@ -33,6 +33,7 @@
 .nav-sidebar.collapsed {
     width: 70px;
     overflow: hidden;
+    gap: 2px;
 }
 
 /* Single unified card with Braun-inspired design */
@@ -69,7 +70,11 @@
 }
 
 /* Collapsed state card adjustments */
-.nav-sidebar.collapsed .nav-logo-card,
+.nav-sidebar.collapsed .nav-logo-card {
+    padding: 12px 8px;
+    min-height: auto;
+}
+
 .nav-sidebar.collapsed .nav-links-card {
     padding: 8px;
     min-height: auto;
