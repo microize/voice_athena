@@ -269,11 +269,14 @@ window.NavComponent = {
         // Close mobile menu when clicking on links
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', (e) => {
+                // Only handle mobile menu closing on mobile devices
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('mobile-open');
                     mobileToggle.innerHTML = '≡';
                 }
+                // Prevent any other event propagation that might trigger sidebar toggle
+                e.stopPropagation();
             });
         });
 
@@ -372,11 +375,21 @@ async function loadNavigation(config) {
 /**
  * Toggle sidebar collapse/expand functionality
  */
-function toggleSidebar() {
+function toggleSidebar(event) {
+    // Prevent event from bubbling up
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    // Temporarily disabled - keep collapsed state for time being
+    return;
+    
     const sidebar = document.querySelector('.nav-sidebar');
     const container = document.querySelector('.container');
     
-    if (sidebar && container) {
+    // Only toggle if we're not on mobile (to avoid conflicts with mobile menu)
+    if (window.innerWidth > 768 && sidebar && container) {
         sidebar.classList.toggle('collapsed');
         container.classList.toggle('sidebar-collapsed');
         
@@ -390,16 +403,12 @@ function toggleSidebar() {
  * Initialize sidebar state from localStorage
  */
 function initializeSidebarState() {
-    // Default to collapsed if no preference is stored
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
-    if (isCollapsed) {
-        const sidebar = document.querySelector('.nav-sidebar');
-        const container = document.querySelector('.container');
-        
-        if (sidebar && container) {
-            sidebar.classList.add('collapsed');
-            container.classList.add('sidebar-collapsed');
-        }
+    // Force collapsed state always for time being
+    // Sidebar already has collapsed class in HTML, just need to handle container
+    const container = document.querySelector('.container');
+    
+    if (container) {
+        container.classList.add('sidebar-collapsed');
     }
 }
 
