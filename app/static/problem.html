@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
     <link rel="stylesheet" href="/static/styles/problems.css">
-    <link rel="stylesheet" href="/static/styles/problem-modern.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
 <body class="leetcode-body">
@@ -23,9 +22,9 @@
                 Problems
             </a>
             <div class="problem-info">
-                <span class="problem-number">1.</span>
-                <span class="problem-title-dynamic">Two Sum</span>
-                <span class="problem-difficulty-badge easy">Easy</span>
+                <span class="problem-number">Loading...</span>
+                <span class="problem-title-dynamic">Loading Problem...</span>
+                <span class="problem-difficulty-badge easy">Loading...</span>
             </div>
         </div>
         <div class="topbar-right">
@@ -54,54 +53,9 @@
 
             <!-- Tab Content -->
             <div id="description-tab" class="tab-content active">
-                <!-- Problem Header -->
-                <div class="problem-header">
-                    <h1 class="problem-title">1. Two Sum</h1>
-                    <div class="problem-meta">
-                        <div class="problem-stats">
-                            <span class="stat">👍 Accepted</span>
-                            <span class="stat">👎 Difficulty: Easy</span>
-                            <span class="stat">📊 Acceptance Rate: 49.2%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Problem Description -->
-                <div class="problem-description">
-                    <p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.</p>
-                    
-                    <p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-                    
-                    <p>You can return the answer in any order.</p>
-
-                    <div class="example">
-                        <strong>Example 1:</strong>
-                        <pre>Input: nums = [2,7,11,15], target = 9
-Output: [0,1]
-Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</pre>
-                    </div>
-
-                    <div class="example">
-                        <strong>Example 2:</strong>
-                        <pre>Input: nums = [3,2,4], target = 6
-Output: [1,2]</pre>
-                    </div>
-
-                    <div class="example">
-                        <strong>Example 3:</strong>
-                        <pre>Input: nums = [3,3], target = 6
-Output: [0,1]</pre>
-                    </div>
-
-                    <div class="constraints">
-                        <strong>Constraints:</strong>
-                        <ul>
-                            <li>2 ≤ nums.length ≤ 10⁴</li>
-                            <li>-10⁹ ≤ nums[i] ≤ 10⁹</li>
-                            <li>-10⁹ ≤ target ≤ 10⁹</li>
-                            <li>Only one valid answer exists.</li>
-                        </ul>
-                    </div>
+                <!-- Problem content will be loaded dynamically here -->
+                <div class="loading-state">
+                    <p>Loading problem details...</p>
                 </div>
             </div>
 
@@ -146,11 +100,7 @@ Output: [0,1]</pre>
 
             <!-- Code Editor -->
             <div class="editor-container">
-                <textarea id="codeEditor" class="code-editor" placeholder="class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        pass">class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        pass</textarea>
+                <textarea id="codeEditor" class="code-editor" placeholder="Loading code template...">// Loading code template...</textarea>
             </div>
 
             <!-- Console Area -->
@@ -170,16 +120,16 @@ Output: [0,1]</pre>
                             </div>
                         </div>
                         
-                        <div class="testcase-input">
-                            <label>nums =</label>
-                            <input type="text" class="input-field" value="[2,7,11,15]" readonly>
-                            <label>target =</label>
-                            <input type="text" class="input-field" value="9" readonly>
+                        <div class="testcase-input" id="testcaseInput">
+                            <!-- Test case inputs will be populated dynamically -->
+                            <div class="loading-state">
+                                <p>Loading test cases...</p>
+                            </div>
                         </div>
                     </div>
                     
                     <div id="result-panel" class="console-panel">
-                        <div class="result-content">
+                        <div class="result-content" id="testcaseResults">
                             <div class="result-placeholder">Run your code to see results here.</div>
                         </div>
                     </div>
@@ -190,118 +140,10 @@ Output: [0,1]</pre>
 
     <!-- JavaScript -->
     <script src="/static/js/utils.js"></script>
+    <script src="/static/js/problem.js"></script>
     <script>
+        // Only keep resizable panels functionality since everything else is handled by problem.js
         document.addEventListener('DOMContentLoaded', () => {
-            // Tab switching
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetTab = btn.dataset.tab;
-                    
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(t => t.classList.remove('active'));
-                    
-                    btn.classList.add('active');
-                    document.getElementById(targetTab + '-tab').classList.add('active');
-                });
-            });
-
-            // Console tab switching
-            const consoleTabs = document.querySelectorAll('.console-tab');
-            const consolePanels = document.querySelectorAll('.console-panel');
-            
-            consoleTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const targetPanel = tab.dataset.console;
-                    
-                    consoleTabs.forEach(t => t.classList.remove('active'));
-                    consolePanels.forEach(p => p.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    document.getElementById(targetPanel + '-panel').classList.add('active');
-                });
-            });
-
-            // Button functionality
-            const runBtn = document.getElementById('runBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const codeEditor = document.getElementById('codeEditor');
-            const resultPanel = document.getElementById('result-panel');
-
-            runBtn.addEventListener('click', () => {
-                // Switch to result tab
-                document.querySelector('.console-tab[data-console="result"]').click();
-                
-                // Show mock result
-                resultPanel.querySelector('.result-content').innerHTML = `
-                    <div class="result-header passed">Accepted</div>
-                    <div class="result-details">
-                        <div class="result-row">
-                            <span class="label">Runtime:</span>
-                            <span class="value">64 ms</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="label">Memory:</span>
-                            <span class="value">15.3 MB</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="label">Output:</span>
-                            <span class="value">[0,1]</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="label">Expected:</span>
-                            <span class="value">[0,1]</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            submitBtn.addEventListener('click', () => {
-                alert('Solution submitted successfully!');
-            });
-
-            resetBtn.addEventListener('click', () => {
-                codeEditor.value = `class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        pass`;
-                
-                resultPanel.querySelector('.result-content').innerHTML = 
-                    '<div class="result-placeholder">Run your code to see results here.</div>';
-            });
-
-            // Test case navigation
-            let currentCase = 1;
-            const totalCases = 3;
-            const testCases = [
-                { nums: '[2,7,11,15]', target: '9' },
-                { nums: '[3,2,4]', target: '6' },
-                { nums: '[3,3]', target: '6' }
-            ];
-
-            function updateTestCase() {
-                document.getElementById('caseInfo').textContent = `Case ${currentCase} of ${totalCases}`;
-                const inputs = document.querySelectorAll('.input-field');
-                inputs[0].value = testCases[currentCase - 1].nums;
-                inputs[1].value = testCases[currentCase - 1].target;
-            }
-
-            document.getElementById('nextCase').addEventListener('click', () => {
-                if (currentCase < totalCases) {
-                    currentCase++;
-                    updateTestCase();
-                }
-            });
-
-            document.getElementById('prevCase').addEventListener('click', () => {
-                if (currentCase > 1) {
-                    currentCase--;
-                    updateTestCase();
-                }
-            });
-
             // Resizable panels
             const resizer = document.getElementById('resizer');
             const leftPanel = document.querySelector('.left-panel');

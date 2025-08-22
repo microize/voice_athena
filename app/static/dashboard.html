@@ -15,7 +15,6 @@
     <!-- Modular CSS -->
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
-    <link rel="stylesheet" href="/static/styles/dashboard.css">
     <link rel="stylesheet" href="/static/styles/dashboard-glass-fix.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
@@ -45,27 +44,113 @@
                 </div>
             </div>
 
-
-            <!-- Problems Container with Grid Layout -->
-            <div class="problems-container">
-                <!-- Bookmarked Problems -->
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Left Section (70%) - Problems -->
                 <div class="problems-section">
-                    <h2 class="section-title">Bookmarked Problems</h2>
-                    <div class="problems-feed" id="bookmarkedProblems">
-                        <div class="no-problems-message">
-                            <i data-lucide="bookmark" class="no-problems-icon"></i>
-                            <span>No bookmarked problems yet. Visit the Problems page to bookmark your favorite challenges.</span>
+                    <!-- Recently Attempted Problems -->
+                    <div class="problem-group">
+                        <div class="group-header">
+                            <h3 class="group-title">
+                                <i data-lucide="clock" class="group-icon"></i>
+                                Recently Attempted
+                            </h3>
+                            <a href="/problems" class="view-all-link">View All</a>
+                        </div>
+                        <div class="problem-cards" id="recentProblems">
+                            <div class="no-problems-card">
+                                <i data-lucide="clock" class="no-problems-icon"></i>
+                                <span>No recent attempts yet</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bookmarked Problems -->
+                    <div class="problem-group">
+                        <div class="group-header">
+                            <h3 class="group-title">
+                                <i data-lucide="bookmark" class="group-icon"></i>
+                                Bookmarked Problems
+                            </h3>
+                            <a href="/problems" class="view-all-link">View All</a>
+                        </div>
+                        <div class="problem-cards" id="bookmarkedProblems">
+                            <div class="no-problems-card">
+                                <i data-lucide="bookmark" class="no-problems-icon"></i>
+                                <span>No bookmarks yet</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recently Attempted Problems -->
-                <div class="problems-section">
-                    <h2 class="section-title">Recently Attempted Problems</h2>
-                    <div class="problems-feed" id="recentProblems">
-                        <div class="no-problems-message">
-                            <i data-lucide="clock" class="no-problems-icon"></i>
-                            <span>No recently attempted problems. Start solving problems to see your progress here.</span>
+                <!-- Right Section (30%) - Stats -->
+                <div class="stats-section">
+                    <!-- Streak Card -->
+                    <div class="stat-card streak-card">
+                        <div class="stat-header">
+                            <div class="stat-icon streak-icon">
+                                <i data-lucide="flame" class="icon"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="streakValue">0</div>
+                                <div class="stat-label">Day Streak</div>
+                            </div>
+                        </div>
+                        <div class="streak-progress">
+                            <div class="streak-bar">
+                                <div class="streak-fill" id="streakFill" style="width: 0%"></div>
+                            </div>
+                            <div class="streak-text">Keep going!</div>
+                        </div>
+                    </div>
+
+                    <!-- Problems Solved Card -->
+                    <div class="stat-card solved-card">
+                        <div class="stat-header">
+                            <div class="stat-icon solved-icon">
+                                <i data-lucide="check-circle" class="icon"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="solvedValue">0</div>
+                                <div class="stat-label">Problems Solved</div>
+                            </div>
+                        </div>
+                        <div class="difficulty-breakdown">
+                            <div class="difficulty-item">
+                                <span class="difficulty-badge easy">Easy</span>
+                                <span class="difficulty-count" id="easyCount">0</span>
+                            </div>
+                            <div class="difficulty-item">
+                                <span class="difficulty-badge medium">Medium</span>
+                                <span class="difficulty-count" id="mediumCount">0</span>
+                            </div>
+                            <div class="difficulty-item">
+                                <span class="difficulty-badge hard">Hard</span>
+                                <span class="difficulty-count" id="hardCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Card -->
+                    <div class="stat-card performance-card">
+                        <div class="stat-header">
+                            <div class="stat-icon performance-icon">
+                                <i data-lucide="trending-up" class="icon"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="accuracyValue">0%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="performance-details">
+                            <div class="performance-item">
+                                <span class="performance-label">This Week</span>
+                                <span class="performance-value" id="weeklyPerformance">-</span>
+                            </div>
+                            <div class="performance-item">
+                                <span class="performance-label">Best Streak</span>
+                                <span class="performance-value" id="bestStreak">0 days</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,8 +173,8 @@
             // Setup chat input functionality
             setupChatInput();
             
-            // Load problems data
-            await loadProblemsData();
+            // Load dashboard data
+            await loadDashboardData();
         });
 
         // Load user info for welcome card
@@ -153,35 +238,47 @@
             // This could connect to an AI assistant or help system
         }
 
-        // Load problems data for bookmarked and recent sections
-        async function loadProblemsData() {
+        // Load dashboard data
+        async function loadDashboardData() {
             try {
-                // Load bookmarked problems
-                const bookmarkedProblems = getBookmarkedProblems();
-                renderProblems('bookmarkedProblems', bookmarkedProblems, 'bookmark');
-
-                // Load recently attempted problems
-                const recentProblems = getRecentlyAttemptedProblems();
-                renderProblems('recentProblems', recentProblems, 'clock');
+                // Load problems data
+                await loadProblemsData();
+                
+                // Load stats data
+                loadStatsData();
+                
+                // Re-render lucide icons
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
             } catch (error) {
-                console.error('Error loading problems data:', error);
+                console.error('Error loading dashboard data:', error);
             }
         }
 
-        // Get bookmarked problems from localStorage
-        function getBookmarkedProblems() {
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarkedProblems') || '[]');
-            return bookmarks.slice(0, 5); // Show max 5 problems
+        // Load problems data
+        async function loadProblemsData() {
+            // Load recent problems
+            const recentProblems = getRecentlyAttemptedProblems();
+            renderProblems('recentProblems', recentProblems.slice(0, 2));
+
+            // Load bookmarked problems
+            const bookmarkedProblems = getBookmarkedProblems();
+            renderProblems('bookmarkedProblems', bookmarkedProblems.slice(0, 2));
         }
 
         // Get recently attempted problems from localStorage
         function getRecentlyAttemptedProblems() {
-            const recent = JSON.parse(localStorage.getItem('recentlyAttempted') || '[]');
-            return recent.slice(0, 5); // Show max 5 problems
+            return JSON.parse(localStorage.getItem('recentlyAttempted') || '[]');
         }
 
-        // Render problems in the specified container
-        function renderProblems(containerId, problems, fallbackIcon) {
+        // Get bookmarked problems from localStorage
+        function getBookmarkedProblems() {
+            return JSON.parse(localStorage.getItem('bookmarkedProblems') || '[]');
+        }
+
+        // Render problems in container
+        function renderProblems(containerId, problems) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
@@ -190,16 +287,124 @@
                 return;
             }
 
-            // Clear the container and add problems
+            // Clear container and add problem cards
             container.innerHTML = problems.map(problem => `
-                <div class="problem-item">
+                <div class="problem-card" onclick="window.location.href='/problem/${problem.id}'">
                     <div class="problem-info">
-                        <span class="problem-difficulty ${problem.difficulty?.toLowerCase() || 'medium'}">${problem.difficulty || 'Medium'}</span>
+                        <span class="difficulty-badge ${problem.difficulty?.toLowerCase() || 'medium'}">${problem.difficulty || 'Medium'}</span>
                         <a href="/problem/${problem.id}" class="problem-title">${sanitizeInput(problem.title)}</a>
                     </div>
                     <div class="problem-status">${problem.status || (problem.lastAttempted ? formatTimeAgo(problem.lastAttempted) : 'Not attempted')}</div>
                 </div>
             `).join('');
+        }
+
+        // Load stats data
+        function loadStatsData() {
+            const stats = getUserStats();
+            
+            // Update streak
+            document.getElementById('streakValue').textContent = stats.currentStreak;
+            document.getElementById('streakFill').style.width = `${Math.min((stats.currentStreak / 7) * 100, 100)}%`;
+            
+            // Update problems solved
+            document.getElementById('solvedValue').textContent = stats.totalSolved;
+            document.getElementById('easyCount').textContent = stats.easySolved;
+            document.getElementById('mediumCount').textContent = stats.mediumSolved;
+            document.getElementById('hardCount').textContent = stats.hardSolved;
+            
+            // Update performance
+            document.getElementById('accuracyValue').textContent = `${stats.successRate}%`;
+            document.getElementById('weeklyPerformance').textContent = stats.weeklyProblems > 0 ? `${stats.weeklyProblems} solved` : '-';
+            document.getElementById('bestStreak').textContent = `${stats.bestStreak} days`;
+            
+            // Update streak text
+            const streakText = document.querySelector('.streak-text');
+            if (stats.currentStreak === 0) {
+                streakText.textContent = 'Start your streak!';
+            } else if (stats.currentStreak < 7) {
+                streakText.textContent = `${7 - stats.currentStreak} more for weekly goal!`;
+            } else {
+                streakText.textContent = 'Amazing streak! 🔥';
+            }
+        }
+
+        // Get user stats from localStorage and calculate metrics
+        function getUserStats() {
+            const solved = JSON.parse(localStorage.getItem('solvedProblems') || '[]');
+            const attempts = JSON.parse(localStorage.getItem('problemAttempts') || '[]');
+            
+            // Calculate difficulty breakdown
+            const easySolved = solved.filter(p => p.difficulty === 'easy').length;
+            const mediumSolved = solved.filter(p => p.difficulty === 'medium').length;
+            const hardSolved = solved.filter(p => p.difficulty === 'hard').length;
+            
+            // Calculate success rate
+            const totalAttempts = attempts.length;
+            const successRate = totalAttempts > 0 ? Math.round((solved.length / totalAttempts) * 100) : 0;
+            
+            // Calculate streaks
+            const currentStreak = calculateCurrentStreak(solved);
+            const bestStreak = calculateBestStreak(solved);
+            
+            // Calculate weekly performance
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const weeklyProblems = solved.filter(p => new Date(p.solvedAt || p.lastAttempted) > oneWeekAgo).length;
+            
+            return {
+                totalSolved: solved.length,
+                easySolved,
+                mediumSolved,
+                hardSolved,
+                successRate,
+                currentStreak,
+                bestStreak,
+                weeklyProblems
+            };
+        }
+
+        // Calculate current streak
+        function calculateCurrentStreak(solvedProblems) {
+            if (solvedProblems.length === 0) return 0;
+            
+            // Sort by date (most recent first)
+            const sorted = solvedProblems
+                .filter(p => p.solvedAt || p.lastAttempted)
+                .sort((a, b) => new Date(b.solvedAt || b.lastAttempted) - new Date(a.solvedAt || a.lastAttempted));
+            
+            if (sorted.length === 0) return 0;
+            
+            let streak = 0;
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            
+            for (const problem of sorted) {
+                const problemDate = new Date(problem.solvedAt || problem.lastAttempted);
+                problemDate.setHours(0, 0, 0, 0);
+                
+                const daysDiff = Math.floor((currentDate - problemDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff === streak) {
+                    streak++;
+                } else if (daysDiff === streak + 1) {
+                    // Allow for yesterday if today hasn't been solved yet
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // Calculate best streak
+        function calculateBestStreak(solvedProblems) {
+            if (solvedProblems.length === 0) return 0;
+            
+            // For simplicity, return current streak as best streak
+            // In a real app, you'd track this over time
+            return Math.max(calculateCurrentStreak(solvedProblems), 0);
         }
 
         // Format time ago helper
