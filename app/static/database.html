@@ -19,7 +19,7 @@
     <!-- Modular CSS -->
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
-    <link rel="stylesheet" href="/static/styles/database.css">
+    <link rel="stylesheet" href="/static/styles/database-enhanced.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
 <body>
@@ -28,46 +28,115 @@
         <div id="navigation-container"></div>
 
         <div class="main-content">
-            <!-- Database Schema Sidebar -->
-            <div class="schema-sidebar">
-                <div class="panel-header">Database Schema</div>
+            <div class="database-content">
+                <!-- Database Schema Sidebar -->
+                <div class="schema-sidebar">
+                <div class="panel-header">
+                    Database Schema
+                    <div class="schema-tools">
+                        <button id="collapseAllBtn" class="tool-btn" title="Collapse All">
+                            <i data-lucide="chevrons-up" class="tool-icon"></i>
+                        </button>
+                        <button id="expandAllBtn" class="tool-btn" title="Expand All">
+                            <i data-lucide="chevrons-down" class="tool-icon"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="schema-search">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="schemaSearch" placeholder="Search tables and columns..." class="search-input">
+                        <button id="clearSearchBtn" class="clear-search" title="Clear search">
+                            <i data-lucide="x" class="clear-icon"></i>
+                        </button>
+                    </div>
+                </div>
                 
                 <div class="schema-section">
                     <div class="table-item">
                         <div class="table-header" onclick="toggleTableSchema('employees')">
-                            <span class="table-name">employees</span>
-                            <span class="toggle-icon">▼</span>
+                            <div class="table-info">
+                                <i data-lucide="table" class="table-icon"></i>
+                                <span class="table-name">employees</span>
+                                <span class="row-count">(3 rows)</span>
+                            </div>
+                            <span class="toggle-icon">▶</span>
                         </div>
-                        <div class="table-columns" id="employees-schema">
-                            <div class="column-item">
-                                <span class="column-name">id</span>
-                                <span class="column-type">INTEGER PRIMARY KEY</span>
+                        <div class="table-columns collapsed" id="employees-schema">
+                            <div class="column-item" data-column="id" data-type="INTEGER">
+                                <div class="column-info">
+                                    <i data-lucide="key" class="column-icon primary-key"></i>
+                                    <span class="column-name">id</span>
+                                </div>
+                                <div class="column-meta">
+                                    <span class="column-type">INTEGER PRIMARY KEY</span>
+                                    <button class="copy-column" onclick="copyColumnName('id')" title="Copy column name">
+                                        <i data-lucide="copy" class="copy-icon"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="column-item">
-                                <span class="column-name">employee_id</span>
-                                <span class="column-type">TEXT UNIQUE</span>
+                            <div class="column-item" data-column="employee_id" data-type="TEXT">
+                                <div class="column-info">
+                                    <i data-lucide="hash" class="column-icon unique"></i>
+                                    <span class="column-name">employee_id</span>
+                                </div>
+                                <div class="column-meta">
+                                    <span class="column-type">TEXT UNIQUE</span>
+                                    <button class="copy-column" onclick="copyColumnName('employee_id')" title="Copy column name">
+                                        <i data-lucide="copy" class="copy-icon"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="column-item">
-                                <span class="column-name">name</span>
-                                <span class="column-type">TEXT</span>
+                            <div class="column-item" data-column="name" data-type="TEXT">
+                                <div class="column-info">
+                                    <i data-lucide="type" class="column-icon text"></i>
+                                    <span class="column-name">name</span>
+                                </div>
+                                <div class="column-meta">
+                                    <span class="column-type">TEXT</span>
+                                    <button class="copy-column" onclick="copyColumnName('name')" title="Copy column name">
+                                        <i data-lucide="copy" class="copy-icon"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="column-item">
-                                <span class="column-name">department</span>
-                                <span class="column-type">TEXT</span>
+                            <div class="column-item" data-column="department" data-type="TEXT">
+                                <div class="column-info">
+                                    <i data-lucide="type" class="column-icon text"></i>
+                                    <span class="column-name">department</span>
+                                </div>
+                                <div class="column-meta">
+                                    <span class="column-type">TEXT</span>
+                                    <button class="copy-column" onclick="copyColumnName('department')" title="Copy column name">
+                                        <i data-lucide="copy" class="copy-icon"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="column-item">
-                                <span class="column-name">role</span>
-                                <span class="column-type">TEXT</span>
+                            <div class="column-item" data-column="role" data-type="TEXT">
+                                <div class="column-info">
+                                    <i data-lucide="type" class="column-icon text"></i>
+                                    <span class="column-name">role</span>
+                                </div>
+                                <div class="column-meta">
+                                    <span class="column-type">TEXT</span>
+                                    <button class="copy-column" onclick="copyColumnName('role')" title="Copy column name">
+                                        <i data-lucide="copy" class="copy-icon"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="table-item">
                         <div class="table-header" onclick="toggleTableSchema('interview_sessions')">
-                            <span class="table-name">interview_sessions</span>
-                            <span class="toggle-icon">▼</span>
+                            <div class="table-info">
+                                <i data-lucide="table" class="table-icon"></i>
+                                <span class="table-name">interview_sessions</span>
+                                <span class="row-count">(12 rows)</span>
+                            </div>
+                            <span class="toggle-icon">▶</span>
                         </div>
-                        <div class="table-columns" id="interview_sessions-schema">
+                        <div class="table-columns collapsed" id="interview_sessions-schema">
                             <div class="column-item">
                                 <span class="column-name">id</span>
                                 <span class="column-type">INTEGER PRIMARY KEY</span>
@@ -102,9 +171,9 @@
                     <div class="table-item">
                         <div class="table-header" onclick="toggleTableSchema('interview_questions')">
                             <span class="table-name">interview_questions</span>
-                            <span class="toggle-icon">▼</span>
+                            <span class="toggle-icon">▶</span>
                         </div>
-                        <div class="table-columns" id="interview_questions-schema">
+                        <div class="table-columns collapsed" id="interview_questions-schema">
                             <div class="column-item">
                                 <span class="column-name">id</span>
                                 <span class="column-type">INTEGER PRIMARY KEY</span>
@@ -135,22 +204,128 @@
 
                 <!-- Sample Queries -->
                 <div class="sample-queries">
-                    <div class="panel-header">Sample Queries</div>
-                    
-                    <div class="sample-query" data-query="SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;">
-                        <div class="sample-query-title">Recent Interview Sessions</div>
+                    <div class="panel-header">
+                        Sample Queries
+                        <div class="query-category-filter">
+                            <select id="categoryFilter" class="category-select">
+                                <option value="all">All Categories</option>
+                                <option value="basic">Basic Queries</option>
+                                <option value="analytics">Analytics</option>
+                                <option value="performance">Performance</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <div class="sample-query" data-query="SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id ORDER BY avg_score DESC;">
-                        <div class="sample-query-title">Employee Performance Summary</div>
-                    </div>
-                    
-                    <div class="sample-query" data-query="SELECT category, difficulty, COUNT(*) as question_count, AVG(score) as avg_score FROM interview_questions WHERE score IS NOT NULL GROUP BY category, difficulty ORDER BY category, difficulty;">
-                        <div class="sample-query-title">Question Performance by Category</div>
-                    </div>
-                    
-                    <div class="sample-query" data-query="SELECT DATE(start_time) as interview_date, COUNT(*) as sessions_count, COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count FROM interview_sessions GROUP BY DATE(start_time) ORDER BY interview_date DESC LIMIT 14;">
-                        <div class="sample-query-title">Daily Interview Activity</div>
+                    <div class="query-categories">
+                        <!-- Basic Queries -->
+                        <div class="query-category" data-category="basic">
+                            <div class="category-header">
+                                <i data-lucide="play-circle" class="category-icon"></i>
+                                <span class="category-title">Basic Queries</span>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT * FROM interview_sessions ORDER BY start_time DESC LIMIT 10;" data-complexity="easy">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Recent Interview Sessions</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge easy">Easy</span>
+                                        <span class="execution-time">~5ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Retrieve the 10 most recent interview sessions</div>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT employee_id, name FROM employees WHERE department = 'Engineering';" data-complexity="easy">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Engineering Employees</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge easy">Easy</span>
+                                        <span class="execution-time">~3ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Find all employees in the Engineering department</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Analytics Queries -->
+                        <div class="query-category" data-category="analytics">
+                            <div class="category-header">
+                                <i data-lucide="bar-chart" class="category-icon"></i>
+                                <span class="category-title">Analytics</span>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id ORDER BY avg_score DESC;" data-complexity="medium">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Employee Performance Summary</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge medium">Medium</span>
+                                        <span class="execution-time">~15ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Analyze employee interview performance with scores and session counts</div>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT category, difficulty, COUNT(*) as question_count, AVG(score) as avg_score FROM interview_questions WHERE score IS NOT NULL GROUP BY category, difficulty ORDER BY category, difficulty;" data-complexity="medium">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Question Performance by Category</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge medium">Medium</span>
+                                        <span class="execution-time">~12ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Group questions by category and difficulty with average scores</div>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT DATE(start_time) as interview_date, COUNT(*) as sessions_count, COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count FROM interview_sessions GROUP BY DATE(start_time) ORDER BY interview_date DESC LIMIT 14;" data-complexity="medium">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Daily Interview Activity</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge medium">Medium</span>
+                                        <span class="execution-time">~20ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Track daily interview trends over the past 2 weeks</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Queries -->
+                        <div class="query-category" data-category="performance">
+                            <div class="category-header">
+                                <i data-lucide="trending-up" class="category-icon"></i>
+                                <span class="category-title">Performance Analysis</span>
+                            </div>
+                            
+                            <div class="sample-query" data-query="WITH employee_stats AS (SELECT employee_id, AVG(overall_score) as avg_score, COUNT(*) as total_sessions FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id) SELECT e.name, e.department, es.avg_score, es.total_sessions FROM employees e JOIN employee_stats es ON e.employee_id = es.employee_id WHERE es.avg_score > 0.8;" data-complexity="hard">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Top Performing Employees</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge hard">Hard</span>
+                                        <span class="execution-time">~25ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Find employees with average scores above 0.8 using CTEs</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Queries -->
+                        <div class="query-category" data-category="advanced">
+                            <div class="category-header">
+                                <i data-lucide="zap" class="category-icon"></i>
+                                <span class="category-title">Advanced Queries</span>
+                            </div>
+                            
+                            <div class="sample-query" data-query="SELECT e.employee_id, e.name, is.session_count, is.avg_score, RANK() OVER (ORDER BY is.avg_score DESC) as performance_rank FROM employees e JOIN (SELECT employee_id, COUNT(*) as session_count, AVG(overall_score) as avg_score FROM interview_sessions WHERE overall_score IS NOT NULL GROUP BY employee_id HAVING COUNT(*) >= 3) is ON e.employee_id = is.employee_id ORDER BY performance_rank;" data-complexity="hard">
+                                <div class="query-header">
+                                    <div class="sample-query-title">Employee Performance Ranking</div>
+                                    <div class="query-badges">
+                                        <span class="complexity-badge hard">Hard</span>
+                                        <span class="execution-time">~35ms</span>
+                                    </div>
+                                </div>
+                                <div class="query-description">Rank employees by performance using window functions and having clauses</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,30 +334,37 @@
             <div class="query-results-area">
                 <!-- Query Panel -->
                 <div class="query-panel">
-                    <div class="panel-header">SQL Query Editor</div>
+                    <div class="panel-header">
+                        SQL Query Editor
+                        <div class="query-tools">
+                            <button id="executeBtn" class="tool-btn" title="Execute Query">
+                                <i data-lucide="play" class="tool-icon"></i>
+                            </button>
+                            <button id="formatBtn" class="tool-btn" title="Format SQL">
+                                <i data-lucide="code" class="tool-icon"></i>
+                            </button>
+                            <button id="historyBtn" class="tool-btn" title="Query History">
+                                <i data-lucide="history" class="tool-icon"></i>
+                            </button>
+                            <button id="fullscreenBtn" class="tool-btn" title="Fullscreen">
+                                <i data-lucide="maximize" class="tool-icon"></i>
+                            </button>
+                        </div>
+                    </div>
                     
-                    <textarea 
-                        id="queryEditor" 
-                        class="query-editor" 
-                        placeholder="Enter your SQL query here... (Ctrl+Enter to execute)
+                    <div class="query-editor-container">
+                        <textarea 
+                            id="queryEditor" 
+                            class="query-editor" 
+                            placeholder="Enter your SQL query here... (Ctrl+Enter to execute)
 
 Example:
 SELECT * FROM interview_sessions 
 ORDER BY start_time DESC 
 LIMIT 10;"
-                    ></textarea>
-                    
-                    <div class="query-controls">
-                        <button id="executeBtn" class="button primary">
-                            <i data-lucide="play" class="button-icon"></i>
-                            Execute Query
-                        </button>
-                        <button id="clearBtn" class="button secondary">
-                            <i data-lucide="x" class="button-icon"></i>
-                            Clear
-                        </button>
-                        <div class="query-info">Press Ctrl+Enter to execute</div>
+                        ></textarea>
                     </div>
+                    
 
                     <div id="statusBar" class="status-bar"></div>
                 </div>
@@ -191,7 +373,25 @@ LIMIT 10;"
                 <div class="results-panel">
                     <div class="results-header">
                         <div class="panel-header">Query Results</div>
-                        <div class="results-meta" id="resultsMeta"></div>
+                        <div class="results-tools">
+                            <div class="results-meta" id="resultsMeta"></div>
+                            <div class="export-tools">
+                                <button id="exportCSV" class="tool-btn" title="Export as CSV">
+                                    <i data-lucide="download" class="tool-icon"></i>
+                                    CSV
+                                </button>
+                                <button id="exportJSON" class="tool-btn" title="Export as JSON">
+                                    <i data-lucide="download" class="tool-icon"></i>
+                                    JSON
+                                </button>
+                                <button id="copyResults" class="tool-btn" title="Copy to Clipboard">
+                                    <i data-lucide="copy" class="tool-icon"></i>
+                                </button>
+                                <button id="fullscreenResults" class="tool-btn" title="Fullscreen Results">
+                                    <i data-lucide="maximize-2" class="tool-icon"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="results-container">
@@ -203,10 +403,12 @@ LIMIT 10;"
             </div>
         </div>
     </div>
+    </div>
 
     <!-- Modular JavaScript -->
     <script src="/static/components/nav-component.js"></script>
     <script src="/static/js/utils.js"></script>
+    <script src="/static/js/sql-syntax-highlighter.js"></script>
     <script src="/static/js/database.js"></script>
 </body>
 </html>

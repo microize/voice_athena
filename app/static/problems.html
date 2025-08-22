@@ -15,7 +15,7 @@
     <!-- Modular CSS -->
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
-    <link rel="stylesheet" href="/static/styles/problems.css">
+    <link rel="stylesheet" href="/static/styles/problems-enhanced.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
 <body>
@@ -24,82 +24,86 @@
         <div id="navigation-container"></div>
 
         <div class="main-content">
-            <div class="problems-header">
-                <h1 class="problems-title">Coding Problems</h1>
-                <p class="problems-subtitle">Practice your coding skills with curated programming challenges</p>
+            <!-- Header -->
+            <div class="page-header">
+                <h1>Problems</h1>
             </div>
 
-            <div class="problems-filters">
-                <button class="filter-btn active" data-filter="all">All Problems</button>
-                <button class="filter-btn" data-filter="easy">Easy</button>
-                <button class="filter-btn" data-filter="medium">Medium</button>
-                <button class="filter-btn" data-filter="hard">Hard</button>
-                <button class="filter-btn" data-filter="array">Array</button>
-                <button class="filter-btn" data-filter="string">String</button>
-                <button class="filter-btn" data-filter="dynamic">Dynamic Programming</button>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="search-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" class="search-box" placeholder="Search problems..." id="searchInput">
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Difficulty:</label>
+                        <div class="filter-tabs" data-filter="difficulty">
+                            <button class="filter-tab active" data-value="all">All</button>
+                            <button class="filter-tab" data-value="easy">Easy</button>
+                            <button class="filter-tab" data-value="medium">Medium</button>
+                            <button class="filter-tab" data-value="hard">Hard</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Category:</label>
+                        <div class="filter-tabs" data-filter="category">
+                            <button class="filter-tab active" data-value="all">All</button>
+                            <button class="filter-tab" data-value="array">Array</button>
+                            <button class="filter-tab" data-value="string">String</button>
+                            <button class="filter-tab" data-value="sql">SQL</button>
+                            <button class="filter-tab" data-value="tree">Tree</button>
+                            <button class="filter-tab" data-value="hash table">Hash Table</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="problems-grid" id="problemsGrid">
-                <!-- Sample Problem Card -->
-                <div class="problem-card" data-difficulty="easy" data-tags="array,hash-table">
-                    <div class="problem-header">
-                        <div>
-                            <div class="problem-title">Two Sum</div>
-                            <div class="problem-difficulty easy">Easy</div>
-                        </div>
-                    </div>
-                    <div class="problem-description">
-                        Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
-                    </div>
-                    <div class="problem-tags">
-                        <span class="problem-tag">Array</span>
-                        <span class="problem-tag">Hash Table</span>
-                    </div>
-                    <div class="problem-footer">
-                        <div class="problem-stats">85.5% Acceptance Rate</div>
-                        <a href="/problem/1" class="problem-action">Solve</a>
-                    </div>
-                </div>
+            <div class="problems-table">
+                <table>
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Problem</th>
+                            <th>Category</th>
+                            <th>Difficulty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="problemsList">
+                        <!-- Problems will be loaded dynamically here -->
+                        <tr class="loading">
+                            <td colspan="4">Loading problems...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <!-- More problems would be loaded here -->
-                <div class="problem-card" data-difficulty="medium" data-tags="string,dynamic">
-                    <div class="problem-header">
-                        <div>
-                            <div class="problem-title">Longest Palindromic Substring</div>
-                            <div class="problem-difficulty medium">Medium</div>
-                        </div>
-                    </div>
-                    <div class="problem-description">
-                        Given a string s, return the longest palindromic substring in s.
-                    </div>
-                    <div class="problem-tags">
-                        <span class="problem-tag">String</span>
-                        <span class="problem-tag">Dynamic Programming</span>
-                    </div>
-                    <div class="problem-footer">
-                        <div class="problem-stats">32.8% Acceptance Rate</div>
-                        <a href="/problem/2" class="problem-action">Solve</a>
-                    </div>
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <span id="paginationInfo">Showing 1-20 of 0 problems</span>
                 </div>
-
-                <div class="problem-card" data-difficulty="hard" data-tags="array,sliding-window">
-                    <div class="problem-header">
-                        <div>
-                            <div class="problem-title">Median of Two Sorted Arrays</div>
-                            <div class="problem-difficulty hard">Hard</div>
-                        </div>
+                <div class="pagination">
+                    <button class="pagination-btn prev-btn" id="prevBtn" disabled>
+                        <i data-lucide="chevron-left"></i>
+                        Previous
+                    </button>
+                    <div class="pagination-numbers" id="paginationNumbers">
+                        <!-- Page numbers will be generated dynamically -->
                     </div>
-                    <div class="problem-description">
-                        Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
-                    </div>
-                    <div class="problem-tags">
-                        <span class="problem-tag">Array</span>
-                        <span class="problem-tag">Binary Search</span>
-                    </div>
-                    <div class="problem-footer">
-                        <div class="problem-stats">36.2% Acceptance Rate</div>
-                        <a href="/problem/3" class="problem-action">Solve</a>
-                    </div>
+                    <button class="pagination-btn next-btn" id="nextBtn" disabled>
+                        Next
+                        <i data-lucide="chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -108,35 +112,14 @@
     <!-- Modular JavaScript -->
     <script src="/static/components/nav-component.js"></script>
     <script src="/static/js/utils.js"></script>
+    <script src="/static/js/problems.js"></script>
     <script>
         // Initialize problems page
         document.addEventListener('DOMContentLoaded', async () => {
             await loadNavigation({activePage: 'problems', rightContent: 'userInfo'});
             
-            // Filter functionality
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const problemCards = document.querySelectorAll('.problem-card');
-            
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Update active button
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    const filter = btn.dataset.filter;
-                    
-                    // Filter problems
-                    problemCards.forEach(card => {
-                        if (filter === 'all') {
-                            card.style.display = 'block';
-                        } else if (card.dataset.difficulty === filter || card.dataset.tags.includes(filter)) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
+            // The ProblemsManager from problems.js will handle loading and filtering
+            // Note: problems.js already has its own DOMContentLoaded listener
         });
     </script>
 </body>
