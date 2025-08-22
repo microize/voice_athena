@@ -1,0 +1,1188 @@
+/**
+ * Enhanced Database Page Design
+ * Inspired by clean grid-based layout with inset shadows and excellent data density
+ * Following the same pattern as problems-enhanced.css
+ */
+
+/* ==================== TYPOGRAPHY & BASE ==================== */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+}
+
+/* Override all existing styles */
+.page-header,
+.database-content,
+.schema-sidebar,
+.query-results-area {
+    all: unset !important;
+    display: block !important;
+}
+
+/* ==================== MAIN LAYOUT ==================== */
+
+.main-content {
+    flex: 1 !important;
+    padding: 12px 16px 16px 16px !important;
+    overflow-y: auto !important;
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    background: #fcfcfc !important;
+    min-height: 100vh !important;
+}
+
+/* ==================== PAGE HEADER ==================== */
+
+.page-header {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    padding: 32px 24px 24px 24px !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 12px !important;
+    margin-left: -24px !important;
+    margin-right: -24px !important;
+}
+
+.page-header h1 {
+    font-size: clamp(32px, 4vw, 48px) !important;
+    font-weight: 300 !important;
+    color: var(--foreground) !important;
+    margin: 0 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.page-header h1::before {
+    display: none !important;
+}
+
+/* ==================== DATABASE LAYOUT ==================== */
+
+.database-content {
+    display: grid !important;
+    grid-template-columns: 280px 1fr !important;
+    gap: 16px !important;
+    align-items: start !important;
+    width: 100% !important;
+}
+
+/* ==================== SIDEBAR STYLING ==================== */
+
+.schema-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    position: sticky !important;
+    top: 16px !important;
+    min-width: 0 !important;
+}
+
+.schema-section,
+.sample-queries {
+    background: white !important;
+    border: 1px solid rgba(153, 134, 100, 0.15) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                inset -1px -1px 2px rgba(0,0,0,0.1) !important;
+    overflow: hidden !important;
+}
+
+.panel-header {
+    background: #fffbf4 !important;
+    color: #998664 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.15) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* ==================== ENHANCED SCHEMA SIDEBAR ==================== */
+
+.schema-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+.schema-search {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.1) !important;
+    background: #fafafa !important;
+}
+
+.search-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.search-icon {
+    position: absolute !important;
+    left: 12px !important;
+    width: 14px !important;
+    height: 14px !important;
+    color: #666 !important;
+    pointer-events: none !important;
+}
+
+.search-input {
+    width: 100% !important;
+    padding: 6px 10px 6px 28px !important;
+    border: 1px solid rgba(153, 134, 100, 0.2) !important;
+    border-radius: 6px !important;
+    background: white !important;
+    font-size: 12px !important;
+    font-family: inherit !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.search-input:focus {
+    border-color: rgba(153, 134, 100, 0.4) !important;
+    box-shadow: 0 0 0 2px rgba(153, 134, 100, 0.1) !important;
+}
+
+.clear-search {
+    position: absolute !important;
+    right: 8px !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    color: #666 !important;
+    opacity: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.search-input:not(:placeholder-shown) + .clear-search {
+    opacity: 1 !important;
+}
+
+.clear-search:hover {
+    background: rgba(153, 134, 100, 0.1) !important;
+    color: #998664 !important;
+}
+
+.clear-icon {
+    width: 12px !important;
+    height: 12px !important;
+}
+
+/* Enhanced Table Items */
+.table-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.table-icon {
+    width: 16px !important;
+    height: 16px !important;
+    color: #998664 !important;
+}
+
+.row-count {
+    font-size: 11px !important;
+    color: #666 !important;
+    font-weight: normal !important;
+    background: rgba(153, 134, 100, 0.1) !important;
+    padding: 2px 6px !important;
+    border-radius: 10px !important;
+}
+
+/* Enhanced Column Items */
+.column-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 8px 12px !important;
+    margin: 3px 0 !important;
+    background: rgba(153, 134, 100, 0.03) !important;
+    border: 1px solid rgba(153, 134, 100, 0.08) !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+}
+
+.column-item:hover {
+    background: rgba(153, 134, 100, 0.06) !important;
+    border-color: rgba(153, 134, 100, 0.15) !important;
+}
+
+.column-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: 1 !important;
+}
+
+.column-icon {
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+}
+
+.column-icon.primary-key {
+    color: #dc2626 !important; /* Red for primary keys */
+}
+
+.column-icon.unique {
+    color: #2563eb !important; /* Blue for unique */
+}
+
+.column-icon.text {
+    color: #16a34a !important; /* Green for text */
+}
+
+.column-icon.number {
+    color: #ea580c !important; /* Orange for numbers */
+}
+
+.column-icon.timestamp {
+    color: #7c3aed !important; /* Purple for timestamps */
+}
+
+.column-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.copy-column {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    color: #666 !important;
+    opacity: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.column-item:hover .copy-column {
+    opacity: 1 !important;
+}
+
+.copy-column:hover {
+    background: rgba(153, 134, 100, 0.1) !important;
+    color: #998664 !important;
+}
+
+.copy-icon {
+    width: 12px !important;
+    height: 12px !important;
+}
+
+/* Search highlighting */
+.search-highlight {
+    background: rgba(255, 235, 59, 0.3) !important;
+    border-radius: 2px !important;
+    padding: 1px 2px !important;
+}
+
+/* Hidden items during search */
+.search-hidden {
+    display: none !important;
+}
+
+/* Tool Buttons */
+.query-tools,
+.export-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.tool-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 6px 8px !important;
+    border: 1px solid rgba(153, 134, 100, 0.2) !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: #998664 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+}
+
+.tool-btn:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: rgba(153, 134, 100, 0.4) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(153, 134, 100, 0.1) !important;
+}
+
+.tool-icon {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Results Tools Layout */
+.results-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    flex: 1 !important;
+    justify-content: space-between !important;
+}
+
+.results-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: rgba(153, 134, 100, 0.05) !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.1) !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+}
+
+/* ==================== QUERY AREA STYLING ==================== */
+
+.query-results-area {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    min-width: 0 !important;
+}
+
+.query-panel,
+.results-panel {
+    background: white !important;
+    border: 1px solid rgba(153, 134, 100, 0.15) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                inset -1px -1px 2px rgba(0,0,0,0.1) !important;
+    overflow: hidden !important;
+}
+
+/* ==================== ENHANCED QUERY EDITOR ==================== */
+
+/* Query Editor Container */
+.query-editor-container {
+    position: relative !important;
+    display: flex !important;
+    background: #fafafa !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Line Numbers */
+.query-line-numbers {
+    background: #f0f0f0 !important;
+    color: #666 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    padding: 20px 8px 20px 12px !important;
+    text-align: right !important;
+    user-select: none !important;
+    border-right: 1px solid rgba(153, 134, 100, 0.2) !important;
+    min-width: 40px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+.line-number {
+    height: 21px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+}
+
+/* Query Editor Wrapper */
+.query-editor-wrapper {
+    position: relative !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+}
+
+/* Highlight Overlay */
+.query-highlight-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    color: transparent !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
+/* Query Editor */
+.query-editor {
+    width: 100% !important;
+    min-height: 200px !important;
+    max-height: 400px !important;
+    border: none !important;
+    outline: none !important;
+    padding: 20px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    background: transparent !important;
+    color: var(--foreground) !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 2 !important;
+    overflow: auto !important;
+}
+
+.query-editor:focus {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* SQL Syntax Highlighting */
+.sql-keyword {
+    color: #0066cc !important;
+    font-weight: 600 !important;
+}
+
+.sql-string {
+    color: #008000 !important;
+}
+
+.sql-number {
+    color: #ff6600 !important;
+}
+
+.sql-comment {
+    color: #808080 !important;
+    font-style: italic !important;
+}
+
+.sql-function {
+    color: #cc00cc !important;
+    font-weight: 500 !important;
+}
+
+.sql-table {
+    color: #cc6600 !important;
+    font-weight: 500 !important;
+}
+
+.sql-column {
+    color: #333399 !important;
+}
+
+.sql-datatype {
+    color: #009999 !important;
+    font-weight: 500 !important;
+}
+
+/* Query Controls */
+.query-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 16px 20px !important;
+    background: rgba(153, 134, 100, 0.05) !important;
+    border-top: 1px solid rgba(153, 134, 100, 0.1) !important;
+}
+
+.button.primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, #998664, #aa9678) !important;
+    color: white !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(153, 134, 100, 0.2) !important;
+}
+
+.button.primary:hover {
+    background: linear-gradient(135deg, #8a7a5a, #9b8769) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 6px rgba(153, 134, 100, 0.3) !important;
+}
+
+.button.secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    background: white !important;
+    color: var(--foreground) !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.button.secondary:hover {
+    background: #f8f9fa !important;
+    border-color: rgba(0,0,0,0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+.query-info {
+    margin-left: auto !important;
+    font-size: 13px !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+    font-style: italic !important;
+}
+
+/* ==================== RESULTS TABLE (MATCHING PROBLEMS STYLE) ==================== */
+
+.results-table {
+    background: white !important;
+    border: 1px solid rgba(153, 134, 100, 0.15) !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
+    box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 
+                inset -1px -1px 2px rgba(0,0,0,0.1) !important;
+    margin-bottom: 0 !important;
+}
+
+.results-table table {
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    background: transparent !important;
+}
+
+/* Results Table Header - Matching Problems Page */
+.results-table thead {
+    background: #fffbf4 !important;
+}
+
+.results-table thead th {
+    background: #fffbf4 !important;
+    padding: 18px 16px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+    text-align: left !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #998664 !important;
+    text-transform: none !important;
+    letter-spacing: 0px !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Results Table Rows */
+.results-table tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.03) !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.results-table tbody tr:hover {
+    background: rgba(153, 134, 100, 0.025) !important;
+}
+
+.results-table tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+.results-table tbody td {
+    padding: 20px 16px !important;
+    border: none !important;
+    vertical-align: middle !important;
+    font-size: 14px !important;
+    color: var(--foreground) !important;
+    line-height: 1.4 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ==================== TABLE SCHEMA STYLING ==================== */
+
+.table-item {
+    border-bottom: 1px solid rgba(153, 134, 100, 0.05) !important;
+}
+
+.table-item:last-child {
+    border-bottom: none !important;
+}
+
+.table-header {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    transition: all 0.2s ease !important;
+    background: transparent !important;
+}
+
+.table-header:hover {
+    background: rgba(153, 134, 100, 0.04) !important;
+}
+
+.table-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--foreground) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+.toggle-icon {
+    color: #998664 !important;
+    font-size: 12px !important;
+    transition: transform 0.2s ease !important;
+}
+
+.table-columns {
+    padding: 0 16px 12px 16px !important;
+    display: block !important;
+    max-height: 400px !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease !important;
+}
+
+.table-columns.collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    padding: 0 20px !important;
+}
+
+.column-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 8px 12px !important;
+    margin: 4px 0 !important;
+    background: rgba(153, 134, 100, 0.03) !important;
+    border: 1px solid rgba(153, 134, 100, 0.08) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.column-item:hover {
+    background: rgba(153, 134, 100, 0.06) !important;
+    border-color: rgba(153, 134, 100, 0.15) !important;
+}
+
+.column-name {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--foreground) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+.column-type {
+    font-size: 10px !important;
+    color: #998664 !important;
+    background: rgba(153, 134, 100, 0.1) !important;
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+}
+
+/* ==================== ENHANCED SAMPLE QUERIES ==================== */
+
+.query-category-filter {
+    position: relative !important;
+}
+
+.category-select {
+    padding: 4px 8px !important;
+    border: 1px solid rgba(153, 134, 100, 0.2) !important;
+    border-radius: 6px !important;
+    background: white !important;
+    color: #998664 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.category-select:focus {
+    border-color: rgba(153, 134, 100, 0.4) !important;
+    box-shadow: 0 0 0 2px rgba(153, 134, 100, 0.1) !important;
+}
+
+.query-categories {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 0 !important;
+}
+
+.query-category {
+    border: 1px solid rgba(153, 134, 100, 0.1) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+}
+
+.query-category.hidden {
+    display: none !important;
+}
+
+.category-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    background: rgba(153, 134, 100, 0.05) !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.1) !important;
+}
+
+.category-icon {
+    width: 16px !important;
+    height: 16px !important;
+    color: #998664 !important;
+}
+
+.category-title {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #998664 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.sample-query {
+    padding: 16px !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.05) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    background: white !important;
+}
+
+.sample-query:last-child {
+    border-bottom: none !important;
+}
+
+.sample-query:hover {
+    background: rgba(153, 134, 100, 0.03) !important;
+    transform: translateX(4px) !important;
+}
+
+.query-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+    gap: 12px !important;
+}
+
+.sample-query-title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--foreground) !important;
+    line-height: 1.3 !important;
+}
+
+.query-badges {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+}
+
+.complexity-badge {
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.complexity-badge.easy {
+    background: rgba(34, 197, 94, 0.1) !important;
+    color: #15803d !important;
+}
+
+.complexity-badge.medium {
+    background: rgba(251, 191, 36, 0.1) !important;
+    color: #d97706 !important;
+}
+
+.complexity-badge.hard {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #dc2626 !important;
+}
+
+.execution-time {
+    font-size: 11px !important;
+    color: #666 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+.query-description {
+    font-size: 12px !important;
+    color: #666 !important;
+    line-height: 1.4 !important;
+    margin-top: 4px !important;
+}
+
+/* ==================== STATUS BAR ==================== */
+
+.status-bar {
+    min-height: 32px !important;
+    padding: 8px 20px !important;
+    background: rgba(153, 134, 100, 0.05) !important;
+    border-top: 1px solid rgba(153, 134, 100, 0.1) !important;
+    font-size: 13px !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.status-bar.success {
+    background: rgba(34, 197, 94, 0.1) !important;
+    color: #15803d !important;
+    border-top-color: rgba(34, 197, 94, 0.2) !important;
+}
+
+.status-bar.error {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #dc2626 !important;
+    border-top-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* ==================== RESULTS PANEL ==================== */
+
+.results-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: rgba(153, 134, 100, 0.05) !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.1) !important;
+}
+
+.results-meta {
+    font-size: 13px !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    padding: 18px 20px !important;
+}
+
+.results-container {
+    overflow: auto !important;
+    max-height: 60vh !important;
+}
+
+/* No Results State */
+.no-results {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 200px !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+    font-style: italic !important;
+}
+
+/* ==================== MODALS ==================== */
+
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1000 !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+.modal-content {
+    background: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+    width: 600px !important;
+    overflow: hidden !important;
+}
+
+.modal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 20px 24px !important;
+    border-bottom: 1px solid rgba(153, 134, 100, 0.15) !important;
+    background: #fffbf4 !important;
+}
+
+.modal-header h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #998664 !important;
+}
+
+.modal-close {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    color: #998664 !important;
+    transition: all 0.2s ease !important;
+}
+
+.modal-close:hover {
+    background: rgba(153, 134, 100, 0.1) !important;
+}
+
+.modal-body {
+    padding: 24px !important;
+    overflow-y: auto !important;
+    max-height: calc(90vh - 80px) !important;
+}
+
+/* ==================== QUERY HISTORY ==================== */
+
+.query-history-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.history-item {
+    padding: 16px !important;
+    border: 1px solid rgba(153, 134, 100, 0.15) !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    background: #fafafa !important;
+}
+
+.history-item:hover {
+    background: white !important;
+    border-color: rgba(153, 134, 100, 0.3) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(153, 134, 100, 0.1) !important;
+}
+
+.history-meta {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 8px !important;
+    font-size: 12px !important;
+    color: #666 !important;
+}
+
+.history-results {
+    background: rgba(153, 134, 100, 0.1) !important;
+    color: #998664 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+}
+
+.history-query {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    color: var(--foreground) !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
+/* ==================== FULLSCREEN MODE ==================== */
+
+.fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 999 !important;
+    background: white !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.fullscreen .query-editor,
+.fullscreen .results-container {
+    min-height: calc(100vh - 200px) !important;
+    max-height: calc(100vh - 200px) !important;
+}
+
+body.fullscreen-active {
+    overflow: hidden !important;
+}
+
+.fullscreen-exit {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
+    background: rgba(153, 134, 100, 0.1) !important;
+    border: 1px solid rgba(153, 134, 100, 0.2) !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+}
+
+/* ==================== ENHANCED ANIMATIONS ==================== */
+
+.tool-btn,
+.history-item,
+.sample-query,
+.table-header {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.query-editor-container {
+    transition: box-shadow 0.3s ease !important;
+}
+
+.query-editor-container:focus-within {
+    box-shadow: 0 0 0 2px rgba(153, 134, 100, 0.2) !important;
+}
+
+/* Loading animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite !important;
+}
+
+/* ==================== ENHANCED RESULTS TABLE ==================== */
+
+.sortable-header {
+    cursor: pointer !important;
+    user-select: none !important;
+    position: relative !important;
+}
+
+.sortable-header:hover {
+    background: #f5f5f5 !important;
+}
+
+.sort-indicator {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    opacity: 0.6 !important;
+    font-size: 12px !important;
+}
+
+.sort-asc .sort-indicator::after {
+    content: '▲' !important;
+}
+
+.sort-desc .sort-indicator::after {
+    content: '▼' !important;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 1200px) {
+    .database-content {
+        grid-template-columns: 280px 1fr !important;
+        gap: 20px !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .database-content {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    .schema-sidebar {
+        position: static !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 16px !important;
+    }
+    
+    .page-header {
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 0 16px 16px 16px !important;
+    }
+    
+    .schema-sidebar {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .query-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+    
+    .query-controls .button {
+        justify-content: center !important;
+    }
+    
+    .query-info {
+        margin-left: 0 !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding: 24px 12px 16px 12px !important;
+        margin-left: -12px !important;
+        margin-right: -12px !important;
+    }
+    
+    .main-content {
+        padding: 0 12px 12px 12px !important;
+    }
+    
+    .results-container {
+        max-height: 40vh !important;
+    }
+}
