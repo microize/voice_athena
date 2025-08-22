@@ -16,21 +16,32 @@ class ProblemService:
     @staticmethod
     async def get_problems(
         difficulty: Optional[str] = None,
-        category: Optional[str] = None
+        category: Optional[str] = None,
+        user_id: Optional[str] = None
     ) -> List[ProblemListItem]:
         """Get list of problems with optional filtering"""
-        query = "SELECT id, title, difficulty, category, tags, acceptance_rate FROM problems WHERE 1=1"
-        params = []
+        if user_id:
+            query = """
+                SELECT p.id, p.title, p.difficulty, p.category, p.tags, p.acceptance_rate,
+                       CASE WHEN s.status = 'Accepted' THEN 1 ELSE 0 END as solved
+                FROM problems p
+                LEFT JOIN submissions s ON p.id = s.problem_id AND s.user_id = ? AND s.status = 'Accepted'
+                WHERE 1=1
+            """
+            params = [user_id]
+        else:
+            query = "SELECT id, title, difficulty, category, tags, acceptance_rate, 0 as solved FROM problems WHERE 1=1"
+            params = []
         
         if difficulty:
-            query += " AND difficulty = ?"
+            query += " AND p.difficulty = ?" if user_id else " AND difficulty = ?"
             params.append(difficulty)
         
         if category:
-            query += " AND category = ?"
+            query += " AND p.category = ?" if user_id else " AND category = ?"
             params.append(category)
         
-        query += " ORDER BY id"
+        query += " ORDER BY " + ("p.id" if user_id else "id")
         
         try:
             async with aiosqlite.connect(settings.DB_PATH) as db:
@@ -45,7 +56,8 @@ class ProblemService:
                         difficulty=row[2],
                         category=row[3],
                         tags=json.loads(row[4]) if row[4] else [],
-                        acceptance_rate=row[5]
+                        acceptance_rate=row[5],
+                        solved=bool(row[6])
                     )
                     problems.append(problem)
                 

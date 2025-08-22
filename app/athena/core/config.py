@@ -20,13 +20,13 @@ class Settings:
     
     # Server Configuration
     HOST: str = os.getenv("HOST", "0.0.0.0")
-    PORT: int = int(os.getenv("PORT", "8003"))
+    PORT: int = int(os.getenv("PORT", "8004"))
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     
     # Security Configuration
     SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY", os.urandom(32).hex())
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15"))
-    MAX_LOGIN_ATTEMPTS: int = int(os.getenv("MAX_LOGIN_ATTEMPTS", "5"))
+    MAX_LOGIN_ATTEMPTS: int = int(os.getenv("MAX_LOGIN_ATTEMPTS", "10"))
     LOGIN_ATTEMPT_WINDOW: int = int(os.getenv("LOGIN_ATTEMPT_WINDOW", "900"))  # 15 minutes
     
     # Rate Limiting Configuration

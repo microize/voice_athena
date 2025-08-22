@@ -11,14 +11,23 @@ class DifficultyLevel(str, Enum):
     HARD = "Hard"
 
 class ProblemCategory(str, Enum):
+    ALGORITHM = "Algorithm"
     ARRAY = "Array"
-    STRING = "String"
-    HASH_TABLE = "Hash Table"
+    BINARY_SEARCH = "Binary Search"
+    CONCURRENCY = "Concurrency"
+    DATABRICKS = "Databricks"
     DYNAMIC_PROGRAMMING = "Dynamic Programming"
-    MATH = "Math"
-    TREE = "Tree"
+    GOOGLE_FOOBAR = "Google Foobar"
     GRAPH = "Graph"
+    GREEDY = "Greedy"
+    HASH_TABLE = "Hash Table"
+    LINKED_LIST = "Linked List"
+    MACHINE_LEARNING = "Machine Learning"
+    MATH = "Math"
     SQL = "SQL"
+    STRING = "String"
+    SYSTEM_DESIGN = "System Design"
+    TREE = "Tree"
 
 class SubmissionStatus(str, Enum):
     PENDING = "pending"
@@ -67,6 +76,10 @@ class ProblemListItem(BaseModel):
     category: ProblemCategory
     tags: List[str]
     acceptance_rate: Optional[float] = None
+    solved: bool = False
+    
+    class Config:
+        use_enum_values = True
 
 class ProblemDetail(BaseModel):
     id: int
@@ -79,6 +92,9 @@ class ProblemDetail(BaseModel):
     tags: List[str]
     test_cases: Dict[str, Any]
     solution_template: Dict[str, str]
+    
+    class Config:
+        use_enum_values = True
 
 class SubmissionResult(BaseModel):
     id: Optional[str] = None

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="leetcode-body">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,55 +7,94 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='16' cy='16' r='16' fill='%23ff4a00'/%3e%3ctext x='16' y='22' text-anchor='middle' font-family='Arial, sans-serif' font-size='20' font-weight='bold' fill='white'%3eA%3c/text%3e%3c/svg%3e">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
-    <!-- Fonts imported via global.css -->
-
     <!-- Modular CSS -->
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
     <link rel="stylesheet" href="/static/styles/problems.css">
+    <link rel="stylesheet" href="/static/styles/problem-modern.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
-<body>
-    <div class="container">
-        <!-- Navigation Bar -->
-        <div id="navigation-container"></div>
+<body class="leetcode-body">
+    <!-- Minimal Top Bar -->
+    <div class="leetcode-topbar">
+        <div class="topbar-left">
+            <a href="/problems" class="home-icon">
+                <div class="nav-logo-icon">A</div>
+                Problems
+            </a>
+            <div class="problem-info">
+                <span class="problem-number">1.</span>
+                <span class="problem-title-dynamic">Two Sum</span>
+                <span class="problem-difficulty-badge easy">Easy</span>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="user-info">Guest User</div>
+            <button class="topbar-logout" onclick="window.location.href='/login'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16,17 21,12 16,7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Logout
+            </button>
+        </div>
+    </div>
 
-        <div class="main-content">
-            <div class="problem-container">
-                <!-- Problem Description Panel -->
-                <div class="problem-panel">
-                    <div class="panel-header">📋 Problem Description</div>
-                    <div class="problem-content">
-                        <div class="problem-header">
-                            <div>
-                                <div class="problem-title">Two Sum</div>
-                                <div class="problem-difficulty easy">Easy</div>
-                            </div>
-                        </div>
-                        
-                        <div class="problem-description">
-                            <p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.</p>
-                            
-                            <p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-                            
-                            <p>You can return the answer in any order.</p>
-                        </div>
+    <!-- LeetCode Container -->
+    <div class="leetcode-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="description">Description</button>
+                <button class="tab-btn" data-tab="editorial">Editorial</button>
+                <button class="tab-btn" data-tab="solutions">Solutions</button>
+            </div>
 
-                        <div class="problem-tags">
-                            <span class="problem-tag">Array</span>
-                            <span class="problem-tag">Hash Table</span>
+            <!-- Tab Content -->
+            <div id="description-tab" class="tab-content active">
+                <!-- Problem Header -->
+                <div class="problem-header">
+                    <h1 class="problem-title">1. Two Sum</h1>
+                    <div class="problem-meta">
+                        <div class="problem-stats">
+                            <span class="stat">👍 Accepted</span>
+                            <span class="stat">👎 Difficulty: Easy</span>
+                            <span class="stat">📊 Acceptance Rate: 49.2%</span>
                         </div>
+                    </div>
+                </div>
 
-                        <h4>Example 1:</h4>
-                        <pre><code>Input: nums = [2,7,11,15], target = 9
+                <!-- Problem Description -->
+                <div class="problem-description">
+                    <p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.</p>
+                    
+                    <p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+                    
+                    <p>You can return the answer in any order.</p>
+
+                    <div class="example">
+                        <strong>Example 1:</strong>
+                        <pre>Input: nums = [2,7,11,15], target = 9
 Output: [0,1]
-Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</code></pre>
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</pre>
+                    </div>
 
-                        <h4>Example 2:</h4>
-                        <pre><code>Input: nums = [3,2,4], target = 6
-Output: [1,2]</code></pre>
+                    <div class="example">
+                        <strong>Example 2:</strong>
+                        <pre>Input: nums = [3,2,4], target = 6
+Output: [1,2]</pre>
+                    </div>
 
-                        <h4>Constraints:</h4>
+                    <div class="example">
+                        <strong>Example 3:</strong>
+                        <pre>Input: nums = [3,3], target = 6
+Output: [0,1]</pre>
+                    </div>
+
+                    <div class="constraints">
+                        <strong>Constraints:</strong>
                         <ul>
                             <li>2 ≤ nums.length ≤ 10⁴</li>
                             <li>-10⁹ ≤ nums[i] ≤ 10⁹</li>
@@ -64,34 +103,84 @@ Output: [1,2]</code></pre>
                         </ul>
                     </div>
                 </div>
+            </div>
 
-                <!-- Code Editor Panel -->
-                <div class="code-panel">
-                    <div class="panel-header">💻 Code Editor</div>
+            <div id="editorial-tab" class="tab-content">
+                <div class="editorial-content">
+                    <h3>Approach 1: Brute Force</h3>
+                    <p>The brute force approach is simple. Loop through each element x and find if there is another value that equals to target − x.</p>
                     
-                    <textarea id="codeEditor" class="code-editor" placeholder="def two_sum(nums, target):
-    # Write your solution here
-    pass">def two_sum(nums, target):
-    # Write your solution here
-    pass</textarea>
-                    
-                    <div class="code-controls">
-                        <button id="runBtn" class="button primary">Run Code</button>
-                        <button id="submitBtn" class="button secondary">Submit</button>
-                        <button id="resetBtn" class="button secondary">Reset</button>
-                    </div>
+                    <h3>Approach 2: Hash Table</h3>
+                    <p>To improve our runtime complexity, we need a more efficient way to check if the complement exists in the array. If the complement exists, we need to get its index. What is the best way to maintain a mapping of each element in the array to its index? A hash table.</p>
+                </div>
+            </div>
 
-                    <div class="test-results" id="testResults">
-                        <h4>Test Results</h4>
-                        <div class="test-case passed">
-                            <strong>Test Case 1:</strong> Passed ✓<br>
-                            Input: [2,7,11,15], target = 9<br>
-                            Expected: [0,1], Got: [0,1]
+            <div id="solutions-tab" class="tab-content">
+                <div class="solutions-content">
+                    <p>Solutions will be available after you solve the problem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Code Header -->
+            <div class="code-header">
+                <div class="language-selector">
+                    <select id="languageSelect">
+                        <option value="python">Python3</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                    </select>
+                </div>
+                <div class="code-actions">
+                    <button class="action-btn white" id="resetBtn">Reset</button>
+                    <button class="action-btn white" id="runBtn">Run</button>
+                    <button class="action-btn primary" id="submitBtn">Submit</button>
+                </div>
+            </div>
+
+            <!-- Code Editor -->
+            <div class="editor-container">
+                <textarea id="codeEditor" class="code-editor" placeholder="class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        pass">class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        pass</textarea>
+            </div>
+
+            <!-- Console Area -->
+            <div class="console-area">
+                <div class="console-tabs">
+                    <button class="console-tab active" data-console="testcase">Testcase</button>
+                    <button class="console-tab" data-console="result">Result</button>
+                </div>
+                
+                <div class="console-content">
+                    <div id="testcase-panel" class="console-panel active">
+                        <div class="testcase-controls">
+                            <div class="case-navigator">
+                                <button class="nav-btn" id="prevCase">‹</button>
+                                <span id="caseInfo">Case 1 of 3</span>
+                                <button class="nav-btn" id="nextCase">›</button>
+                            </div>
                         </div>
-                        <div class="test-case failed">
-                            <strong>Test Case 2:</strong> Failed ✗<br>
-                            Input: [3,2,4], target = 6<br>
-                            Expected: [1,2], Got: [0,2]
+                        
+                        <div class="testcase-input">
+                            <label>nums =</label>
+                            <input type="text" class="input-field" value="[2,7,11,15]" readonly>
+                            <label>target =</label>
+                            <input type="text" class="input-field" value="9" readonly>
+                        </div>
+                    </div>
+                    
+                    <div id="result-panel" class="console-panel">
+                        <div class="result-content">
+                            <div class="result-placeholder">Run your code to see results here.</div>
                         </div>
                     </div>
                 </div>
@@ -99,34 +188,73 @@ Output: [1,2]</code></pre>
         </div>
     </div>
 
-    <!-- Modular JavaScript -->
-    <script src="/static/components/nav-component.js"></script>
+    <!-- JavaScript -->
     <script src="/static/js/utils.js"></script>
     <script>
-        // Initialize problem page
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadNavigation({activePage: 'problems', rightContent: 'backButton'});
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
             
-            // Code editor functionality
-            const codeEditor = document.getElementById('codeEditor');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.dataset.tab;
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(t => t.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.add('active');
+                });
+            });
+
+            // Console tab switching
+            const consoleTabs = document.querySelectorAll('.console-tab');
+            const consolePanels = document.querySelectorAll('.console-panel');
+            
+            consoleTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetPanel = tab.dataset.console;
+                    
+                    consoleTabs.forEach(t => t.classList.remove('active'));
+                    consolePanels.forEach(p => p.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(targetPanel + '-panel').classList.add('active');
+                });
+            });
+
+            // Button functionality
             const runBtn = document.getElementById('runBtn');
             const submitBtn = document.getElementById('submitBtn');
             const resetBtn = document.getElementById('resetBtn');
-            const testResults = document.getElementById('testResults');
+            const codeEditor = document.getElementById('codeEditor');
+            const resultPanel = document.getElementById('result-panel');
 
             runBtn.addEventListener('click', () => {
-                // Simulate running code
-                testResults.innerHTML = `
-                    <h4>Test Results</h4>
-                    <div class="test-case passed">
-                        <strong>Test Case 1:</strong> Passed ✓<br>
-                        Input: [2,7,11,15], target = 9<br>
-                        Expected: [0,1], Got: [0,1]
-                    </div>
-                    <div class="test-case passed">
-                        <strong>Test Case 2:</strong> Passed ✓<br>
-                        Input: [3,2,4], target = 6<br>
-                        Expected: [1,2], Got: [1,2]
+                // Switch to result tab
+                document.querySelector('.console-tab[data-console="result"]').click();
+                
+                // Show mock result
+                resultPanel.querySelector('.result-content').innerHTML = `
+                    <div class="result-header passed">Accepted</div>
+                    <div class="result-details">
+                        <div class="result-row">
+                            <span class="label">Runtime:</span>
+                            <span class="value">64 ms</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="label">Memory:</span>
+                            <span class="value">15.3 MB</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="label">Output:</span>
+                            <span class="value">[0,1]</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="label">Expected:</span>
+                            <span class="value">[0,1]</span>
+                        </div>
                     </div>
                 `;
             });
@@ -136,10 +264,101 @@ Output: [1,2]</code></pre>
             });
 
             resetBtn.addEventListener('click', () => {
-                codeEditor.value = `def two_sum(nums, target):
-    # Write your solution here
-    pass`;
-                testResults.innerHTML = '<h4>Test Results</h4><p>Run your code to see test results here.</p>';
+                codeEditor.value = `class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        pass`;
+                
+                resultPanel.querySelector('.result-content').innerHTML = 
+                    '<div class="result-placeholder">Run your code to see results here.</div>';
+            });
+
+            // Test case navigation
+            let currentCase = 1;
+            const totalCases = 3;
+            const testCases = [
+                { nums: '[2,7,11,15]', target: '9' },
+                { nums: '[3,2,4]', target: '6' },
+                { nums: '[3,3]', target: '6' }
+            ];
+
+            function updateTestCase() {
+                document.getElementById('caseInfo').textContent = `Case ${currentCase} of ${totalCases}`;
+                const inputs = document.querySelectorAll('.input-field');
+                inputs[0].value = testCases[currentCase - 1].nums;
+                inputs[1].value = testCases[currentCase - 1].target;
+            }
+
+            document.getElementById('nextCase').addEventListener('click', () => {
+                if (currentCase < totalCases) {
+                    currentCase++;
+                    updateTestCase();
+                }
+            });
+
+            document.getElementById('prevCase').addEventListener('click', () => {
+                if (currentCase > 1) {
+                    currentCase--;
+                    updateTestCase();
+                }
+            });
+
+            // Resizable panels
+            const resizer = document.getElementById('resizer');
+            const leftPanel = document.querySelector('.left-panel');
+            const rightPanel = document.querySelector('.right-panel');
+            const container = document.querySelector('.leetcode-container');
+            
+            let isResizing = false;
+            
+            resizer.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+                
+                // Add overlay to prevent iframe interference
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.zIndex = '9999';
+                overlay.style.cursor = 'col-resize';
+                overlay.id = 'resize-overlay';
+                document.body.appendChild(overlay);
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+                
+                // Constrain between 20% and 80%
+                const constrainedWidth = Math.min(80, Math.max(20, newLeftWidth));
+                
+                leftPanel.style.width = constrainedWidth + '%';
+                rightPanel.style.width = (100 - constrainedWidth) + '%';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                    
+                    // Remove overlay
+                    const overlay = document.getElementById('resize-overlay');
+                    if (overlay) {
+                        overlay.remove();
+                    }
+                }
+            });
+            
+            // Double-click to reset to 50/50
+            resizer.addEventListener('dblclick', () => {
+                leftPanel.style.width = '50%';
+                rightPanel.style.width = '50%';
             });
         });
     </script>

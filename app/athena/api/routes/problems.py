@@ -26,8 +26,9 @@ async def get_problems(
 ):
     """Get list of problems with optional filtering"""
     try:
-        problems = await problem_service.get_problems(difficulty, category)
-        return {"problems": [problem.dict() for problem in problems]}
+        user_id = user.get("username")  # Using username as user_id
+        problems = await problem_service.get_problems(difficulty, category, user_id)
+        return {"problems": [problem.model_dump() for problem in problems]}
     except Exception as e:
         logger.error(f"Error fetching problems: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch problems")
@@ -45,7 +46,7 @@ async def get_problem(
         if not problem:
             raise HTTPException(status_code=404, detail="Problem not found")
         
-        return problem.dict()
+        return problem.model_dump()
     except HTTPException:
         raise
     except Exception as e:
