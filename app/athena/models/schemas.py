@@ -90,7 +90,7 @@ class ProblemDetail(BaseModel):
     difficulty: DifficultyLevel
     category: ProblemCategory
     tags: List[str]
-    test_cases: Dict[str, Any]
+    test_cases: List[Dict[str, Any]]  # Changed from Dict to List to match database structure
     solution_template: Dict[str, str]
     
     class Config:
