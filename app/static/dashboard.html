@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/buttons.css">
     <link rel="stylesheet" href="/static/styles/dashboard.css">
+    <link rel="stylesheet" href="/static/styles/dashboard-glass-fix.css">
     <link rel="stylesheet" href="/static/components/nav-component.css">
 </head>
 <body>
@@ -24,28 +25,11 @@
         <div id="navigation-container"></div>
 
         <div class="main-content">
-            <!-- Welcome Card with Chat -->
+            <!-- Welcome Card with Search Only -->
             <div class="welcome-card">
-                <div class="welcome-header">
-                    <div class="welcome-user-section">
-                        <div class="welcome-avatar">
-                            <i data-lucide="user" class="avatar-icon"></i>
-                        </div>
-                        <div class="welcome-text">
-                            <h1 class="welcome-title">Hi, <span id="welcomeUserName">User</span>!</h1>
-                            <div class="athena-speech-bubble">
-                                <div class="speech-content">How can I help you today?</div>
-                                <div class="speech-arrow"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="athena-avatar">
-                        <i data-lucide="bot" class="athena-icon"></i>
-                        <span class="athena-name">Golden</span>
-                    </div>
+                <div class="welcome-greeting">
+                    <h1 class="greeting-text">Hello, <span id="greetingUserName">User</span></h1>
                 </div>
-                
                 <div class="welcome-chat">
                     <div class="chat-input-wrapper">
                         <i data-lucide="search" class="search-icon"></i>
@@ -61,81 +45,28 @@
                 </div>
             </div>
 
-            <!-- Stats Overview -->
-            <div class="stats-section">
-                <h2 class="section-title">Your Progress</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i data-lucide="trophy" class="icon"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="interviewCount">0</div>
-                            <div class="stat-label">Interviews Completed</div>
-                            <div class="stat-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%" id="interviewProgress"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i data-lucide="target" class="icon"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="averageScore">--</div>
-                            <div class="stat-label">Average Score</div>
-                            <div class="stat-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%" id="scoreProgress"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i data-lucide="clock" class="icon"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="timeSpent">0h</div>
-                            <div class="stat-label">Time Practiced</div>
-                            <div class="stat-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%" id="timeProgress"></div>
-                                </div>
-                            </div>
+            <!-- Problems Container with Grid Layout -->
+            <div class="problems-container">
+                <!-- Bookmarked Problems -->
+                <div class="problems-section">
+                    <h2 class="section-title">Bookmarked Problems</h2>
+                    <div class="problems-feed" id="bookmarkedProblems">
+                        <div class="no-problems-message">
+                            <i data-lucide="bookmark" class="no-problems-icon"></i>
+                            <span>No bookmarked problems yet. Visit the Problems page to bookmark your favorite challenges.</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Recent Activity -->
-            <div class="activity-section">
-                <h2 class="section-title">Recent Activity</h2>
-                <div class="activity-feed">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i data-lucide="mic" class="icon"></i>
+                <!-- Recently Attempted Problems -->
+                <div class="problems-section">
+                    <h2 class="section-title">Recently Attempted Problems</h2>
+                    <div class="problems-feed" id="recentProblems">
+                        <div class="no-problems-message">
+                            <i data-lucide="clock" class="no-problems-icon"></i>
+                            <span>No recently attempted problems. Start solving problems to see your progress here.</span>
                         </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Welcome to Golden Platform</div>
-                            <div class="activity-description">Ready to start your SQL interview journey</div>
-                        </div>
-                        <div class="activity-time">now</div>
-                    </div>
-                    
-                    <div class="activity-item upcoming">
-                        <div class="activity-icon">
-                            <i data-lucide="calendar" class="icon"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Start Your First Interview</div>
-                            <div class="activity-description">Click "Voice Interview" to begin</div>
-                        </div>
-                        <div class="activity-time">upcoming</div>
                     </div>
                 </div>
             </div>
@@ -156,6 +87,9 @@
             
             // Setup chat input functionality
             setupChatInput();
+            
+            // Load problems data
+            await loadProblemsData();
         });
 
         // Load user info for welcome card
@@ -165,6 +99,10 @@
                 if (response.ok) {
                     const data = await response.json();
                     const welcomeUserName = document.getElementById('welcomeUserName');
+                    const greetingUserName = document.getElementById('greetingUserName');
+                    if (greetingUserName && data.authenticated) {
+                        greetingUserName.textContent = data.username || 'User';
+                    }
                     if (welcomeUserName && data.authenticated) {
                         welcomeUserName.textContent = data.username || 'User';
                     }
@@ -213,6 +151,67 @@
             console.log('Chat message:', message);
             // TODO: Implement chat functionality
             // This could connect to an AI assistant or help system
+        }
+
+        // Load problems data for bookmarked and recent sections
+        async function loadProblemsData() {
+            try {
+                // Load bookmarked problems
+                const bookmarkedProblems = getBookmarkedProblems();
+                renderProblems('bookmarkedProblems', bookmarkedProblems, 'bookmark');
+
+                // Load recently attempted problems
+                const recentProblems = getRecentlyAttemptedProblems();
+                renderProblems('recentProblems', recentProblems, 'clock');
+            } catch (error) {
+                console.error('Error loading problems data:', error);
+            }
+        }
+
+        // Get bookmarked problems from localStorage
+        function getBookmarkedProblems() {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarkedProblems') || '[]');
+            return bookmarks.slice(0, 5); // Show max 5 problems
+        }
+
+        // Get recently attempted problems from localStorage
+        function getRecentlyAttemptedProblems() {
+            const recent = JSON.parse(localStorage.getItem('recentlyAttempted') || '[]');
+            return recent.slice(0, 5); // Show max 5 problems
+        }
+
+        // Render problems in the specified container
+        function renderProblems(containerId, problems, fallbackIcon) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (problems.length === 0) {
+                // Keep the default no-problems message
+                return;
+            }
+
+            // Clear the container and add problems
+            container.innerHTML = problems.map(problem => `
+                <div class="problem-item">
+                    <div class="problem-info">
+                        <span class="problem-difficulty ${problem.difficulty?.toLowerCase() || 'medium'}">${problem.difficulty || 'Medium'}</span>
+                        <a href="/problem/${problem.id}" class="problem-title">${sanitizeInput(problem.title)}</a>
+                    </div>
+                    <div class="problem-status">${problem.status || (problem.lastAttempted ? formatTimeAgo(problem.lastAttempted) : 'Not attempted')}</div>
+                </div>
+            `).join('');
+        }
+
+        // Format time ago helper
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const past = new Date(timestamp);
+            const diffInHours = Math.floor((now - past) / (1000 * 60 * 60));
+            
+            if (diffInHours < 1) return 'Just now';
+            if (diffInHours < 24) return `${diffInHours}h ago`;
+            if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
+            return past.toLocaleDateString();
         }
     </script>
 </body>

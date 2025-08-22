@@ -55,7 +55,8 @@ def create_app() -> FastAPI:
     app.add_middleware(ErrorHandlingMiddleware)
     
     # Add CORS middleware with secure configuration
-    allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8003,http://127.0.0.1:8003").split(",")
+    default_origins = f"http://localhost:3000,http://localhost:{settings.PORT},http://127.0.0.1:{settings.PORT}"
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", default_origins).split(",")
     
     app.add_middleware(
         CORSMiddleware,

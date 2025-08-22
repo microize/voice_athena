@@ -35,7 +35,10 @@
       "Bash(__NEW_LINE__ echo \"problem.html:\")",
       "Bash(__NEW_LINE__ echo \"problems.html:\")",
       "Bash(do echo \"=== $file ===\")",
-      "Bash(wget:*)"
+      "Bash(wget:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

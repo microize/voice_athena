@@ -103,10 +103,10 @@ from athena.core.dependencies import get_problem_service
 
 ## 🎯 Access Points
 
-- **Main Application**: http://localhost:8003/
-- **Login Page**: http://localhost:8003/login
-- **Problems List**: http://localhost:8003/problems
-- **Database Interface**: http://localhost:8003/database
+- **Main Application**: http://localhost:8004/
+- **Login Page**: http://localhost:8004/login
+- **Problems List**: http://localhost:8004/problems
+- **Database Interface**: http://localhost:8004/database
 
 ## 🔑 Default Credentials
 

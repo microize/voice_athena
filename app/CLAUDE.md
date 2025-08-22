@@ -78,7 +78,7 @@ cp .env.example .env
 uv run python server.py
 ```
 
-**Server runs on**: http://localhost:8000
+**Server runs on**: http://localhost:8004
 
 ### Testing & Quality
 ```bash

@@ -49,44 +49,118 @@
 athena/
 ├── app/                          # Main application directory
 │   ├── athena/                   # Core application package
-│   │   ├── api/
-│   │   │   └── routes/           # API endpoints (auth, interview, pages, user)
-│   │   ├── core/
+│   │   ├── __init__.py          # Package initialization
+│   │   ├── main.py              # Application entry point and uvicorn server
+│   │   ├── agents/              # AI agent system integration
+│   │   │   └── __init__.py      # OpenAI Realtime API agent exports
+│   │   ├── api/                 # FastAPI route definitions
+│   │   │   ├── __init__.py      # API router factory
+│   │   │   └── routes/          # Individual route modules
+│   │   │       ├── __init__.py  # Route imports
+│   │   │       ├── auth.py      # Login/logout/registration endpoints
+│   │   │       ├── database.py  # SQL query execution API
+│   │   │       ├── interview.py # Interview session management
+│   │   │       ├── pages.py     # HTML page serving endpoints
+│   │   │       ├── problems.py  # Coding problem CRUD operations
+│   │   │       ├── user.py      # User profile and progress tracking
+│   │   │       └── websockets.py # WebSocket connection handlers
+│   │   ├── core/                # Core application framework
+│   │   │   ├── __init__.py      # Core module exports
 │   │   │   ├── app.py           # FastAPI application factory
-│   │   │   ├── config.py        # Environment configuration
-│   │   │   ├── middleware.py    # Security middleware
-│   │   │   └── security.py      # Authentication & rate limiting
-│   │   ├── models/
+│   │   │   ├── config.py        # Environment configuration management
+│   │   │   ├── database.py      # SQLite database initialization
+│   │   │   ├── dependencies.py  # Dependency injection providers
+│   │   │   ├── exceptions.py    # Custom exception classes
+│   │   │   ├── logging_config.py # Structured logging setup
+│   │   │   ├── middleware.py    # Security headers and request logging
+│   │   │   └── security.py      # Authentication, rate limiting, password hashing
+│   │   ├── models/              # Data models and validation
+│   │   │   ├── __init__.py      # Model exports
 │   │   │   └── schemas.py       # Pydantic validation models
-│   │   └── utils/               # Helper functions
+│   │   ├── services/            # Business logic layer
+│   │   │   ├── __init__.py      # Service exports
+│   │   │   ├── interview_agent_service.py # OpenAI Realtime API integration
+│   │   │   ├── interview_service.py # Interview session orchestration
+│   │   │   ├── judge0_service.py # Code execution via Judge0 API
+│   │   │   ├── problem_service.py # Coding problem management
+│   │   │   └── user_service.py  # User management and analytics
+│   │   └── utils/               # Shared utility functions
+│   │       └── __init__.py      # Utility exports
 │   ├── static/                  # Frontend assets (modular architecture)
 │   │   ├── components/          # Reusable UI components
-│   │   │   ├── nav-component.html
-│   │   │   ├── nav-component.js
-│   │   │   └── nav-component.css
+│   │   │   ├── nav-component.html # Navigation component template
+│   │   │   ├── nav-component.js   # Navigation component logic
+│   │   │   └── nav-component.css  # Navigation component styles
 │   │   ├── styles/              # Modular CSS organization
-│   │   │   ├── global.css       # Variables, fonts, common layouts
-│   │   │   ├── buttons.css      # All button variants
-│   │   │   ├── interview.css    # Voice interview interface
-│   │   │   ├── database.css     # SQL query interface
-│   │   │   ├── dashboard.css    # Dashboard overview
-│   │   │   ├── login.css        # Authentication pages
-│   │   │   ├── problems.css     # Coding problems interface
-│   │   │   └── modal.css        # Modal dialogs
-│   │   ├── js/                  # Modular JavaScript
+│   │   │   ├── global.css       # CSS variables, fonts, common layouts
+│   │   │   ├── buttons.css      # All button variants and states
+│   │   │   ├── interview.css    # Voice interview interface styles
+│   │   │   ├── database.css     # SQL query interface styles
+│   │   │   ├── dashboard.css    # Dashboard overview styles
+│   │   │   ├── login.css        # Authentication page styles
+│   │   │   ├── problems.css     # Coding problems interface styles
+│   │   │   └── modal.css        # Modal dialog styles
+│   │   ├── styles-new/          # Advanced CSS module system
+│   │   │   ├── 01-settings/     # CSS custom properties and variables
+│   │   │   ├── 02-tools/        # Utility classes and mixins
+│   │   │   ├── 03-generic/      # CSS reset and normalization
+│   │   │   ├── 04-elements/     # Base element styling
+│   │   │   ├── 05-objects/      # Layout and structural components
+│   │   │   ├── 06-components/   # UI component styles
+│   │   │   ├── 07-pages/        # Page-specific styles
+│   │   │   └── main.css         # Main stylesheet orchestration
+│   │   ├── js/                  # Modular JavaScript architecture
 │   │   │   ├── utils.js         # Shared utilities (sanitization, messaging)
-│   │   │   ├── interview.js     # Voice interview logic
-│   │   │   ├── database.js      # SQL query handling
-│   │   │   └── login.js         # Authentication logic
+│   │   │   ├── interview.js     # Voice interview WebSocket logic
+│   │   │   ├── database.js      # SQL query interface and results
+│   │   │   ├── login.js         # Authentication form handling
+│   │   │   ├── problem.js       # Individual problem view and editor
+│   │   │   ├── problems.js      # Problem list and filtering
+│   │   │   └── lucide.js        # Icon library integration
+│   │   ├── assets/              # Static media files
+│   │   │   ├── athena-demo.mp4  # Application demo video
+│   │   │   └── *.png            # Application screenshots and images
 │   │   ├── *.html               # Page templates
-│   │   └── assets/              # Images, icons
-│   ├── server.py                # FastAPI application entry point
-│   ├── pyproject.toml           # Python dependencies & config
-│   ├── uv.lock                  # Locked dependency versions
-│   ├── .env.example             # Environment template
-│   ├── CLAUDE.md                # Development guide
-│   └── SECURITY.md              # Security documentation
-└── README.md                    # Project documentation
+│   │   │   ├── index.html       # Voice interview interface
+│   │   │   ├── login.html       # Authentication page
+│   │   │   ├── dashboard.html   # User dashboard
+│   │   │   ├── database.html    # SQL query interface
+│   │   │   ├── problems.html    # Problem list view
+│   │   │   ├── problem.html     # Individual problem view
+│   │   │   └── test-*.html      # Development testing pages
+│   │   ├── app.js               # Legacy application entry point
+│   │   ├── audio-processor-worklet.js # WebAudio worklet for voice processing
+│   │   ├── favicon.ico          # Application favicon
+│   │   └── favicon.svg          # SVG favicon
+│   ├── data/                    # Application data storage
+│   │   └── interview_sessions.db # SQLite database file
+│   ├── docs/                    # Additional documentation
+│   │   ├── ARCHITECTURE.md      # System architecture documentation
+│   │   ├── INTERVIEW_FIXES.md   # Interview system troubleshooting
+│   │   └── SETUP_CODING_PLATFORM.md # Platform setup guide
+│   ├── logs/                    # Application logs
+│   │   ├── athena.log           # General application logs
+│   │   └── athena_errors.log    # Error-specific logs
+│   ├── scripts/                 # Database and maintenance scripts
+│   │   ├── add_sql_problems.py  # Seed database with SQL practice problems
+│   │   ├── create_favicon.py    # Generate application favicon
+│   │   ├── final_sql_schema_update.py # Schema migration script
+│   │   ├── fix_sql_solutions.py # Repair problem solutions
+│   │   ├── update_all_sql_schemas.py # Batch schema updates
+│   │   └── update_sql_schemas.py # Individual schema updates
+│   ├── tests/                   # Test suite
+│   │   └── __init__.py          # Test package initialization
+│   ├── pyproject.toml           # Python dependencies and project configuration
+│   ├── uv.lock                  # Locked dependency versions for reproducible builds
+│   ├── run_athena.py            # Alternative application runner
+│   ├── .env                     # Environment variables (not in version control)
+│   ├── CLAUDE.md                # AI assistant development guide
+│   └── SECURITY.md              # Security documentation and best practices
+├── CLAUDE.md                    # Repository-level AI assistant guide
+├── CONTRIBUTING.md              # Contribution guidelines
+├── PROJECT_STRUCTURE.md         # Detailed project structure documentation
+├── REPOSITORY_GUIDE.md          # Repository navigation guide
+└── README.md                    # Project documentation (this file)
 ```
 
 ## 🔧 Installation & Setup
@@ -275,19 +349,134 @@ class QueryRequest(BaseModel):
 - **X-Frame-Options**: Prevent clickjacking
 - **X-Content-Type-Options**: Prevent MIME type sniffing
 
+## 🔌 API Documentation
+
+### **Authentication Endpoints** (`/api/auth/`)
+- `POST /api/auth/login` - User authentication with rate limiting
+- `POST /api/auth/logout` - Session termination
+- `POST /api/auth/register` - New user registration (if enabled)
+- `GET /api/auth/verify` - Session validation
+
+### **Interview Management** (`/api/interview/`)
+- `POST /api/start-interview` - Initialize new interview session
+- `GET /api/user/progress` - Retrieve user performance analytics
+- `WebSocket /ws/{session_id}` - Real-time interview communication
+
+### **Database Operations** (`/api/database/`)
+- `POST /api/query` - Execute SQL SELECT queries with validation
+- `GET /api/database/schema` - Retrieve database schema information
+
+### **Problem Management** (`/api/problems/`)
+- `GET /api/problems` - List coding problems with filtering
+- `GET /api/problems/{problem_id}` - Get specific problem details
+- `POST /api/problems/{problem_id}/submit` - Submit code solution
+- `GET /api/problems/{problem_id}/submissions` - View submission history
+
+### **User Management** (`/api/user/`)
+- `GET /api/user/profile` - User profile information
+- `PUT /api/user/profile` - Update user profile
+- `GET /api/user/statistics` - Performance statistics and analytics
+
+### **Page Serving** (`/`)
+- `GET /` - Voice interview interface
+- `GET /login` - Authentication page
+- `GET /dashboard` - User dashboard
+- `GET /database` - SQL query interface
+- `GET /problems` - Problem list view
+- `GET /problems/{problem_id}` - Individual problem view
+
 ## 📊 Database Schema
 
 ### **Core Tables**
-- **employees**: Employee records with ID, name, department, role
-- **interview_sessions**: Session metadata with employee linking and scoring
-- **interview_questions**: Question tracking with category and difficulty
-- **interview_responses**: Response evaluation with 0.0-1.0 scoring
-- **session_reports**: Comprehensive performance analytics
+```sql
+-- Employee records for interview tracking
+CREATE TABLE employees (
+    id INTEGER PRIMARY KEY,
+    employee_id TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    department TEXT,
+    role TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-### **Agent Functions**
-- `log_question_asked()`: Category/difficulty tracking for analytics
-- `log_response_evaluation()`: Real-time response scoring and feedback
-- `generate_session_report()`: Comprehensive performance analysis
+-- Interview session metadata
+CREATE TABLE interview_sessions (
+    id TEXT PRIMARY KEY,
+    employee_id TEXT,
+    username TEXT,
+    start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP,
+    overall_score REAL,
+    status TEXT DEFAULT 'active',
+    FOREIGN KEY (employee_id) REFERENCES employees (employee_id)
+);
+
+-- Interview questions with categorization
+CREATE TABLE interview_questions (
+    id INTEGER PRIMARY KEY,
+    session_id TEXT NOT NULL,
+    question_text TEXT NOT NULL,
+    category TEXT NOT NULL,  -- 'joins', 'window_functions', 'cte', etc.
+    difficulty TEXT NOT NULL, -- 'beginner', 'intermediate', 'advanced'
+    asked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES interview_sessions (id)
+);
+
+-- Response evaluation and scoring
+CREATE TABLE interview_responses (
+    id INTEGER PRIMARY KEY,
+    question_id INTEGER NOT NULL,
+    response_text TEXT NOT NULL,
+    score REAL NOT NULL CHECK (score >= 0.0 AND score <= 1.0),
+    feedback TEXT,
+    response_time_seconds INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (question_id) REFERENCES interview_questions (id)
+);
+
+-- Comprehensive performance reports
+CREATE TABLE session_reports (
+    id INTEGER PRIMARY KEY,
+    session_id TEXT UNIQUE NOT NULL,
+    overall_score REAL,
+    strengths TEXT,
+    weaknesses TEXT,
+    recommendations TEXT,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES interview_sessions (id)
+);
+
+-- Coding problems for supplementary assessment
+CREATE TABLE problems (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    difficulty TEXT NOT NULL,
+    category TEXT NOT NULL,
+    solution TEXT,
+    test_cases TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User submissions and solutions
+CREATE TABLE submissions (
+    id INTEGER PRIMARY KEY,
+    problem_id INTEGER NOT NULL,
+    username TEXT NOT NULL,
+    code TEXT NOT NULL,
+    language TEXT NOT NULL,
+    status TEXT, -- 'passed', 'failed', 'timeout'
+    execution_time REAL,
+    memory_usage INTEGER,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (problem_id) REFERENCES problems (id)
+);
+```
+
+### **Agent Function Tools**
+- `log_question_asked(question, category, difficulty)`: Track interview questions by category and difficulty
+- `log_response_evaluation(response, score, feedback)`: Real-time response scoring (0.0-1.0 scale)
+- `generate_session_report()`: Comprehensive performance analysis with strengths/weaknesses
 
 ## 🔍 Development & Testing
 
@@ -324,6 +513,87 @@ uv run mypy athena/
 - [ ] No inline styles or scripts
 - [ ] Proper dependency loading order
 
+## 🔧 Troubleshooting
+
+### **Common Issues and Solutions**
+
+#### **1. OpenAI API Connection Issues**
+```bash
+# Verify API key is valid
+curl https://api.openai.com/v1/models \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+
+# Check environment variable
+echo $OPENAI_API_KEY
+
+# Verify .env file
+cat app/.env | grep OPENAI_API_KEY
+```
+
+#### **2. Database Connection Problems**
+```bash
+# Check database file permissions
+ls -la app/data/interview_sessions.db
+
+# Test database connection
+cd app && python -c "import aiosqlite; print('SQLite available')"
+
+# Reset database (WARNING: destroys data)
+rm app/data/interview_sessions.db
+# Restart application to recreate
+```
+
+#### **3. WebSocket Connection Failures**
+- **Check browser permissions**: Allow microphone access in browser settings
+- **Verify HTTPS**: WebRTC requires secure context (HTTPS or localhost)
+- **Firewall settings**: Ensure port 8000 is accessible
+- **Browser compatibility**: Use Chrome/Firefox for best WebRTC support
+
+#### **4. Audio Processing Issues**
+```bash
+# Check audio worklet file
+ls -la app/static/audio-processor-worklet.js
+
+# Verify sample rate support
+# Browser console: navigator.mediaDevices.getSupportedConstraints()
+```
+
+#### **5. Rate Limiting Errors**
+```bash
+# Check current rate limits in logs
+tail -f app/logs/athena.log | grep "rate_limit"
+
+# Reset rate limiting (temporary)
+# Edit config.py and restart application
+```
+
+### **Debug Mode Setup**
+```bash
+# Enable debug logging
+export DEBUG=true
+export LOG_LEVEL=DEBUG
+
+# Start with verbose logging
+cd app && uv run python -c "
+import logging
+logging.basicConfig(level=logging.DEBUG)
+from athena.main import main
+main()
+"
+```
+
+### **Performance Monitoring**
+```bash
+# Monitor WebSocket connections
+netstat -an | grep :8000
+
+# Check memory usage
+ps aux | grep python
+
+# Monitor database locks
+sqlite3 app/data/interview_sessions.db ".timeout 1000"
+```
+
 ## 🚀 Deployment
 
 ### **Environment Configuration**
@@ -333,6 +603,14 @@ DEBUG=false
 SESSION_SECRET_KEY=$(openssl rand -hex 32)
 ADMIN_PASSWORD=secure-password
 DATABASE_URL=sqlite:///interview_sessions.db
+OPENAI_API_KEY=your-production-api-key
+JUDGE0_API_KEY=your-judge0-api-key
+
+# Optional: Rate limiting configuration
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=3600
+MAX_LOGIN_ATTEMPTS=5
+LOGIN_ATTEMPT_WINDOW=900
 ```
 
 ### **Security Hardening**
@@ -341,8 +619,51 @@ DATABASE_URL=sqlite:///interview_sessions.db
 chmod 600 interview_sessions.db
 chown app:app interview_sessions.db
 
+# Application permissions
+chown -R app:app /path/to/athena
+chmod -R 755 /path/to/athena
+chmod 600 /path/to/athena/app/.env
+
 # Server configuration
 # HTTPS only, secure headers, rate limiting enabled
+# Configure reverse proxy (nginx/apache) with SSL termination
+```
+
+### **Systemd Service (Linux)**
+```ini
+# /etc/systemd/system/athena.service
+[Unit]
+Description=Athena Voice Interview Platform
+After=network.target
+
+[Service]
+Type=simple
+User=app
+WorkingDirectory=/path/to/athena/app
+Environment=PATH=/path/to/athena/app/.venv/bin
+ExecStart=/path/to/athena/app/.venv/bin/python athena/main.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### **Docker Deployment**
+```dockerfile
+# Dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY app/ .
+
+# Install UV package manager
+RUN pip install uv
+RUN uv sync
+
+EXPOSE 8000
+
+CMD ["uv", "run", "python", "athena/main.py"]
 ```
 
 ## 📈 Performance & Monitoring
